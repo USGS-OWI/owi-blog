@@ -5,3 +5,7 @@
 public
 owi-blog.Rproj
 .DS_Store
+*.sublime-project
+*.sublime-workspace
+themes/wdfn_theme/node_modules
+themes/wdfn_theme/static
