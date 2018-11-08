@@ -16,6 +16,7 @@ keywords:
   - R
   - inlmisc
 description: Qualitative, diverging, and sequential color schemes by Paul Tol.
+draft: True
 ---
 
 
@@ -36,7 +37,7 @@ that address this very issue, such as the
 And because this is R, where diversity is king,
 why not offer one more function for creating color blind friendly palettes.
 
-Let me introduce the `GetTolColors` function in the R-package
+Let me introduce the `GetColors` function in the R-package
 [inlmisc](https://CRAN.R-project.org/package=inlmisc).
 This function generates a vector of colors from qualitative, diverging,
 and sequential color schemes by [Paul Tol (2018)](https://personal.sron.nl/~pault/data/colourschemes.pdf).
@@ -60,30 +61,29 @@ And if you're so inclined, read through the function documentation.
 
 
 ```r
-utils::help("GetTolColors", package = "inlmisc")
+utils::help("GetColors", package = "inlmisc")
 ```
 
 Like almost every other R function used to create a color palette,
-`GetTolColors` takes as its first argument the number of colors to be in the returned palette (`n`).
+`GetColors` takes as its first argument the number of colors to be in the returned palette (`n`).
 For example, the following command generates a palette of 10 colors using default values for function arguments.
 
 
 ```r
-cols <- inlmisc::GetTolColors(n = 10)
+cols <- inlmisc::GetColors(n = 10)
 print(cols)
 ```
 
 ```
-##  [1] "#E8ECFB" "#B997C7" "#824D99" "#4E78C4" "#57A2AC" "#7EB875" "#D0B541"
-##  [8] "#E67F33" "#CE2220" "#521A13"
-## attr(,"bad")
+##  [1] "#E7EBFA" "#B997C6" "#824D99" "#4E79C4" "#57A2AC" "#7EB875" "#D0B440"
+##  [8] "#E67F33" "#CE2220" "#521913"
+## attr(,"nan")
 ## [1] "#666666"
 ## attr(,"call")
-## GetTolColors(n = 10, scheme = "smooth rainbow", alpha = NULL, 
-##     start = 0, end = 1, bias = 1, reverse = FALSE, blind = NULL, 
-##     gray = FALSE)
+## GetColors(n = 10, scheme = "smooth rainbow", alpha = NULL, stops = c(0, 
+## 1), bias = 1, reverse = FALSE, blind = NULL, gray = FALSE)
 ## attr(,"class")
-## [1] "Tol"       "character"
+## [1] "inlpal"    "character"
 ```
 
 Returned from the function is an object of class `"Tol"` that inherits behavior from the `"character"` class.
@@ -110,7 +110,7 @@ The label positioned below each shaded rectangle gives the informal color name.
 
 ## Color Schemes
 
-Tal (2018) defines 13 color schemes:
+Tol (2018) defines 13 color schemes:
 7 for qualitative data, 3 for diverging data, and 3 for sequential data (table 1).
 The maximum number of colors in a generated palette is dependent on the user selected scheme.
 For example, the `"discrete rainbow"` scheme can have at most 23 colors in its palette (`n` &le; 23).
@@ -133,6 +133,12 @@ About half of the schemes include a color meant for bad data.
    <td style="text-align:left;"> Qualitative </td>
    <td style="text-align:left;"> bright </td>
    <td style="text-align:right;"> 7 (3) </td>
+   <td style="text-align:center;"> no </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> high-contrast </td>
+   <td style="text-align:right;"> 5 (5) </td>
    <td style="text-align:center;"> no </td>
   </tr>
   <tr>
@@ -197,6 +203,12 @@ About half of the schemes include a color meant for bad data.
   </tr>
   <tr>
    <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> iridescent </td>
+   <td style="text-align:right;"> --- </td>
+   <td style="text-align:center;"> yes </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;">  </td>
    <td style="text-align:left;"> discrete rainbow </td>
    <td style="text-align:right;"> 23 </td>
    <td style="text-align:center;"> yes </td>
@@ -212,18 +224,19 @@ About half of the schemes include a color meant for bad data.
 
 ### Qualitative
 
-Qualitative color schemes `"bright"`, `"vibrant"`, `"muted"`, `"pale"`, `"dark"`, and `"light"`
+Qualitative color schemes `"bright"`, `"vibrant"`, `"muted"`, `"pale"`, `"dark"`, `"light"`, and `"high-contrast"`
 are appropriate for representing nominal or categorical data.
 
 
 ```r
-op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(7, scheme = "bright"))
-plot(inlmisc::GetTolColors(7, scheme = "vibrant"))
-plot(inlmisc::GetTolColors(9, scheme = "muted"))
-plot(inlmisc::GetTolColors(6, scheme = "pale"))
-plot(inlmisc::GetTolColors(6, scheme = "dark"))
-plot(inlmisc::GetTolColors(9, scheme = "light"))
+op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(7, scheme = "bright"))
+plot(inlmisc::GetColors(7, scheme = "vibrant"))
+plot(inlmisc::GetColors(9, scheme = "muted"))
+plot(inlmisc::GetColors(6, scheme = "pale"))
+plot(inlmisc::GetColors(6, scheme = "dark"))
+plot(inlmisc::GetColors(9, scheme = "light"))
+plot(inlmisc::GetColors(5, scheme = "high-contrast"))
 graphics::par(op)
 ```
 
@@ -236,7 +249,7 @@ global land cover classification color scheme (Hansen and others, 1998).
 
 ```r
 op <- graphics::par(oma = c(1, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(14, scheme = "ground cover"))
+plot(inlmisc::GetColors(14, scheme = "ground cover"))
 graphics::par(op)
 ```
 
@@ -253,12 +266,12 @@ quantitative data with progressions outward from a critical midpoint of the data
 
 ```r
 op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors( 11, scheme = "sunset"))
-plot(inlmisc::GetTolColors(256, scheme = "sunset"))
-plot(inlmisc::GetTolColors(  9, scheme = "BuRd"))
-plot(inlmisc::GetTolColors(256, scheme = "BuRd"))
-plot(inlmisc::GetTolColors(  9, scheme = "PRGn"))
-plot(inlmisc::GetTolColors(256, scheme = "PRGn"))
+plot(inlmisc::GetColors( 11, scheme = "sunset"))
+plot(inlmisc::GetColors(256, scheme = "sunset"))
+plot(inlmisc::GetColors(  9, scheme = "BuRd"))
+plot(inlmisc::GetColors(256, scheme = "BuRd"))
+plot(inlmisc::GetColors(  9, scheme = "PRGn"))
+plot(inlmisc::GetColors(256, scheme = "PRGn"))
 graphics::par(op)
 ```
 
@@ -266,17 +279,19 @@ graphics::par(op)
 
 ### Sequential
 
-Sequential schemes `"YlOrBr"`, `"discrete rainbow"`, and `"smooth rainbow"` are appropriate for representing
+Sequential schemes `"YlOrBr"`, `"iridescent"`, `"discrete rainbow"`, and `"smooth rainbow"` are appropriate for representing
 quantitative data that progress from small to large values.
 
 
 ```r
-op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(  9, scheme = "YlOrBr"))
-plot(inlmisc::GetTolColors(256, scheme = "YlOrBr"))
-plot(inlmisc::GetTolColors( 23, scheme = "discrete rainbow"))
-plot(inlmisc::GetTolColors( 34, scheme = "smooth rainbow"))
-plot(inlmisc::GetTolColors(256, scheme = "smooth rainbow"))
+op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(  9, scheme = "YlOrBr"))
+plot(inlmisc::GetColors(256, scheme = "YlOrBr"))
+plot(inlmisc::GetColors( 23, scheme = "iridescent"))
+plot(inlmisc::GetColors(255, scheme = "iridescent"))
+plot(inlmisc::GetColors( 23, scheme = "discrete rainbow"))
+plot(inlmisc::GetColors( 34, scheme = "smooth rainbow"))
+plot(inlmisc::GetColors(256, scheme = "smooth rainbow"))
 graphics::par(op)
 ```
 
@@ -291,11 +306,11 @@ Values range from 0 (fully transparent) to 1 (fully opaque).
 
 ```r
 op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(34, alpha = 1.0))
-plot(inlmisc::GetTolColors(34, alpha = 0.8))
-plot(inlmisc::GetTolColors(34, alpha = 0.6))
-plot(inlmisc::GetTolColors(34, alpha = 0.4))
-plot(inlmisc::GetTolColors(34, alpha = 0.2))
+plot(inlmisc::GetColors(34, alpha = 1.0))
+plot(inlmisc::GetColors(34, alpha = 0.8))
+plot(inlmisc::GetColors(34, alpha = 0.6))
+plot(inlmisc::GetColors(34, alpha = 0.4))
+plot(inlmisc::GetColors(34, alpha = 0.2))
 graphics::par(op)
 ```
 
@@ -311,10 +326,10 @@ Values range from 0 to 1 and represent a fraction of the scheme's color domain.
 
 ```r
 op <- graphics::par(mfrow = c(4, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(256, start = 0.0, end = 1.0))
-plot(inlmisc::GetTolColors(256, start = 0.0, end = 0.5))
-plot(inlmisc::GetTolColors(256, start = 0.5, end = 1.0))
-plot(inlmisc::GetTolColors(256, start = 0.3, end = 0.9))
+plot(inlmisc::GetColors(256, stops = c(0.0, 1.0)))
+plot(inlmisc::GetColors(256, stops = c(0.0, 0.5)))
+plot(inlmisc::GetColors(256, stops = c(0.5, 1.0)))
+plot(inlmisc::GetColors(256, stops = c(0.3, 0.9)))
 graphics::par(op)
 ```
 
@@ -329,13 +344,13 @@ and larger values result in more widely spaced colors at the high end.
 
 ```r
 op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(256, bias = 0.4))
-plot(inlmisc::GetTolColors(256, bias = 0.6))
-plot(inlmisc::GetTolColors(256, bias = 0.8))
-plot(inlmisc::GetTolColors(256, bias = 1.0))
-plot(inlmisc::GetTolColors(256, bias = 1.2))
-plot(inlmisc::GetTolColors(256, bias = 1.4))
-plot(inlmisc::GetTolColors(256, bias = 1.6))
+plot(inlmisc::GetColors(256, bias = 0.4))
+plot(inlmisc::GetColors(256, bias = 0.6))
+plot(inlmisc::GetColors(256, bias = 0.8))
+plot(inlmisc::GetColors(256, bias = 1.0))
+plot(inlmisc::GetColors(256, bias = 1.2))
+plot(inlmisc::GetColors(256, bias = 1.4))
+plot(inlmisc::GetColors(256, bias = 1.6))
 graphics::par(op)
 ```
 
@@ -348,8 +363,8 @@ Reverse the order of colors in a palette by specifying the `reverse` argument as
 
 ```r
 op <- graphics::par(mfrow = c(2, 1), oma = c(0, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(10, reverse = FALSE))
-plot(inlmisc::GetTolColors(10, reverse = TRUE))
+plot(inlmisc::GetColors(10, reverse = FALSE))
+plot(inlmisc::GetColors(10, reverse = TRUE))
 graphics::par(op)
 ```
 
@@ -364,11 +379,11 @@ specify `"deutan"` for green-blind vision, `"protan"` for red-blind vision,
 
 ```r
 op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(34, blind = NULL))
-plot(inlmisc::GetTolColors(34, blind = "deutan"))
-plot(inlmisc::GetTolColors(34, blind = "protan"))
-plot(inlmisc::GetTolColors(34, blind = "tritan"))
-plot(inlmisc::GetTolColors(34, blind = "monochromacy"))
+plot(inlmisc::GetColors(34, blind = NULL))
+plot(inlmisc::GetColors(34, blind = "deutan"))
+plot(inlmisc::GetColors(34, blind = "protan"))
+plot(inlmisc::GetColors(34, blind = "tritan"))
+plot(inlmisc::GetColors(34, blind = "monochrome"))
 graphics::par(op)
 ```
 
@@ -385,24 +400,26 @@ to work after conversion to gray scale by specifying the `gray` argument as `TRU
 
 ```r
 op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(3, "bright",  gray = TRUE))
-plot(inlmisc::GetTolColors(3, "bright",  gray = TRUE, blind = "m"))
-plot(inlmisc::GetTolColors(4, "vibrant", gray = TRUE))
-plot(inlmisc::GetTolColors(4, "vibrant", gray = TRUE, blind = "m"))
-plot(inlmisc::GetTolColors(5, "muted",   gray = TRUE))
-plot(inlmisc::GetTolColors(5, "muted",   gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(3, "bright",  gray = TRUE))
+plot(inlmisc::GetColors(3, "bright",  gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(4, "vibrant", gray = TRUE))
+plot(inlmisc::GetColors(4, "vibrant", gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(5, "muted",   gray = TRUE))
+plot(inlmisc::GetColors(5, "muted",   gray = TRUE, blind = "m"))
 graphics::par(op)
 ```
 
 <img src='/static/tolcolors/gray-1.png'/ title='Prepare qualitative schemes for gray-scale conversion.' alt='Prepare qualitative schemes for gray-scale conversion.' class=''/>
 
-Note that the sequential scheme `"YlOrBr"` works well for conversion to gray scale.
+Note that the sequential schemes `"YlOrBr"` and `"iridescent"` work well for conversion to gray scale.
 
 
 ```r
-op <- graphics::par(mfrow = c(2, 1), oma = c(0, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(256, "YlOrBr"))
-plot(inlmisc::GetTolColors(256, "YlOrBr", blind = "monochromacy"))
+op <- graphics::par(mfrow = c(4, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(256, "YlOrBr"))
+plot(inlmisc::GetColors(256, "YlOrBr",     blind = "monochromacy"))
+plot(inlmisc::GetColors(256, "iridescent"))
+plot(inlmisc::GetColors(256, "iridescent", blind = "monochromacy"))
 graphics::par(op)
 ```
 
@@ -415,8 +432,8 @@ UMD Global Land Cover Classification, 1 Kilometer, 1.0:
 Department of Geography, University of Maryland, College Park, Maryland, 1981-1994.
 
 Tol, Paul, 2018, Colour Schemes: SRON Technical Note,
-doc. no. SRON/EPS/TN/09-002, issue 3.0, 17 p.,
-accessed August 29, 2018 at <https://personal.sron.nl/~pault/data/colourschemes.pdf>.
+doc. no. SRON/EPS/TN/09-002, issue 3.1, 20 p.,
+accessed September 24, 2018 at <https://personal.sron.nl/~pault/data/colourschemes.pdf>.
 
 ## Reproducibility
 
@@ -424,44 +441,65 @@ R-session information for content in this document is as follows:
 
 
 ```
+## - Session info ----------------------------------------------------------
 ##  setting  value                       
 ##  version  R version 3.5.1 (2018-07-02)
+##  os       Windows 10 x64              
 ##  system   x86_64, mingw32             
 ##  ui       Rgui                        
 ##  language (EN)                        
 ##  collate  English_United States.1252  
+##  ctype    English_United States.1252  
 ##  tz       America/Los_Angeles         
-##  date     2018-09-12                  
+##  date     2018-11-08                  
 ## 
-##  package    * version date       source        
-##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)
-##  base       * 3.5.1   2018-07-02 local         
-##  checkmate    1.8.5   2017-10-24 CRAN (R 3.5.1)
-##  compiler     3.5.1   2018-07-02 local         
-##  datasets   * 3.5.1   2018-07-02 local         
-##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.1)
-##  dichromat    2.0-0   2013-01-24 CRAN (R 3.5.0)
-##  digest       0.6.16  2018-08-22 CRAN (R 3.5.1)
-##  evaluate     0.11    2018-07-17 CRAN (R 3.5.1)
-##  graphics   * 3.5.1   2018-07-02 local         
-##  grDevices  * 3.5.1   2018-07-02 local         
-##  grid         3.5.1   2018-07-02 local         
-##  highr        0.7     2018-06-09 CRAN (R 3.5.1)
-##  igraph       1.2.2   2018-07-27 CRAN (R 3.5.1)
-##  inlmisc      0.4.3   2018-09-10 CRAN (R 3.5.1)
-##  knitr        1.20    2018-02-20 CRAN (R 3.5.1)
-##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)
-##  magrittr     1.5     2014-11-22 CRAN (R 3.5.1)
-##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.1)
-##  methods    * 3.5.1   2018-07-02 local         
-##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)
-##  rgdal        1.3-4   2018-08-03 CRAN (R 3.5.1)
-##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.1)
-##  sp           1.3-1   2018-06-05 CRAN (R 3.5.1)
-##  stats      * 3.5.1   2018-07-02 local         
-##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.1)
-##  stringr      1.3.1   2018-05-10 CRAN (R 3.5.1)
-##  tools        3.5.1   2018-07-02 local         
-##  utils      * 3.5.1   2018-07-02 local         
-##  withr        2.1.2   2018-03-15 CRAN (R 3.5.1)
+## - Packages --------------------------------------------------------------
+##  package     * version date       lib source        
+##  assertthat    0.2.0   2017-04-11 [1] CRAN (R 3.5.1)
+##  backports     1.1.2   2017-12-13 [1] CRAN (R 3.5.0)
+##  base64enc     0.1-3   2015-07-28 [1] CRAN (R 3.5.0)
+##  callr         3.0.0   2018-08-24 [1] CRAN (R 3.5.1)
+##  checkmate     1.8.5   2017-10-24 [1] CRAN (R 3.5.1)
+##  cli           1.0.1   2018-09-25 [1] CRAN (R 3.5.1)
+##  colorspace    1.3-2   2016-12-14 [1] CRAN (R 3.5.1)
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
+##  data.table    1.11.8  2018-09-30 [1] CRAN (R 3.5.1)
+##  debugme       1.1.0   2017-10-22 [1] CRAN (R 3.5.1)
+##  desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
+##  devtools      2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
+##  dichromat     2.0-0   2013-01-24 [1] CRAN (R 3.5.0)
+##  digest        0.6.18  2018-10-10 [1] CRAN (R 3.5.1)
+##  evaluate      0.12    2018-10-09 [1] CRAN (R 3.5.1)
+##  fs            1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
+##  glue          1.3.0   2018-07-17 [1] CRAN (R 3.5.1)
+##  highr         0.7     2018-06-09 [1] CRAN (R 3.5.1)
+##  igraph        1.2.2   2018-07-27 [1] CRAN (R 3.5.1)
+##  inlmisc       0.4.4   2018-11-08 [1] CRAN (R 3.5.1)
+##  knitr         1.20    2018-02-20 [1] CRAN (R 3.5.1)
+##  lattice       0.20-38 2018-11-04 [1] CRAN (R 3.5.1)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.1)
+##  memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.1)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 3.5.1)
+##  pkgbuild      1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
+##  pkgconfig     2.0.2   2018-08-16 [1] CRAN (R 3.5.1)
+##  pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
+##  prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
+##  processx      3.2.0   2018-08-16 [1] CRAN (R 3.5.1)
+##  ps            1.2.1   2018-11-06 [1] CRAN (R 3.5.1)
+##  R6            2.3.0   2018-10-04 [1] CRAN (R 3.5.1)
+##  Rcpp          1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
+##  remotes       2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
+##  rgdal         1.3-6   2018-10-16 [1] CRAN (R 3.5.1)
+##  rlang         0.3.0.1 2018-10-25 [1] CRAN (R 3.5.1)
+##  rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
+##  scales        1.0.0   2018-08-09 [1] CRAN (R 3.5.1)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
+##  sp            1.3-1   2018-06-05 [1] CRAN (R 3.5.1)
+##  stringi       1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
+##  stringr       1.3.1   2018-05-10 [1] CRAN (R 3.5.1)
+##  testthat      2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
+##  usethis       1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
+## 
+## [1] C:/Users/jfisher/Tools/R/R-3.5.1/library
 ```
