@@ -193,7 +193,7 @@ And let's not forget the R session information.
 ##  collate  English_United States.1252  
 ##  ctype    English_United States.1252  
 ##  tz       America/Los_Angeles         
-##  date     2018-11-02                  
+##  date     2018-11-08                  
 ## 
 ## - Packages --------------------------------------------------------------
 ##  package       * version date       lib source        
@@ -224,7 +224,7 @@ And let's not forget the R session information.
 ##  jsonlite        1.5     2017-06-01 [1] CRAN (R 3.5.1)
 ##  knitr           1.20    2018-02-20 [1] CRAN (R 3.5.1)
 ##  later           0.7.5   2018-09-18 [1] CRAN (R 3.5.1)
-##  lattice         0.20-35 2017-03-25 [1] CRAN (R 3.5.1)
+##  lattice         0.20-38 2018-11-04 [1] CRAN (R 3.5.1)
 ##  leaflet         2.0.2   2018-08-27 [1] CRAN (R 3.5.1)
 ##  lubridate       1.7.4   2018-04-11 [1] CRAN (R 3.5.1)
 ##  magrittr        1.5     2014-11-22 [1] CRAN (R 3.5.1)
@@ -238,18 +238,18 @@ And let's not forget the R session information.
 ##  prettyunits     1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
 ##  processx        3.2.0   2018-08-16 [1] CRAN (R 3.5.1)
 ##  promises        1.0.1   2018-04-13 [1] CRAN (R 3.5.1)
-##  ps              1.2.0   2018-10-16 [1] CRAN (R 3.5.1)
+##  ps              1.2.1   2018-11-06 [1] CRAN (R 3.5.1)
 ##  purrr           0.2.5   2018-05-29 [1] CRAN (R 3.5.1)
 ##  R6              2.3.0   2018-10-04 [1] CRAN (R 3.5.1)
-##  Rcpp            0.12.19 2018-10-01 [1] CRAN (R 3.5.1)
+##  Rcpp            1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
 ##  readr           1.1.1   2017-05-16 [1] CRAN (R 3.5.1)
 ##  remotes         2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
 ##  reshape2        1.4.3   2017-12-11 [1] CRAN (R 3.5.1)
 ##  rgdal           1.3-6   2018-10-16 [1] CRAN (R 3.5.1)
 ##  rlang           0.3.0.1 2018-10-25 [1] CRAN (R 3.5.1)
 ##  rprojroot       1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
-##  sessioninfo     1.1.0   2018-09-25 [1] CRAN (R 3.5.1)
-##  shiny           1.1.0   2018-05-17 [1] CRAN (R 3.5.1)
+##  sessioninfo     1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
+##  shiny           1.2.0   2018-11-02 [1] CRAN (R 3.5.1)
 ##  sp              1.3-1   2018-06-05 [1] CRAN (R 3.5.1)
 ##  stringi         1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
 ##  stringr         1.3.1   2018-05-10 [1] CRAN (R 3.5.1)

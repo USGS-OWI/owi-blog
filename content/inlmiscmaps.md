@@ -291,7 +291,7 @@ R-session information for content in this document is as follows:
 ##  collate  English_United States.1252  
 ##  ctype    English_United States.1252  
 ##  tz       America/Los_Angeles         
-##  date     2018-11-02                  
+##  date     2018-11-08                  
 ## 
 ## - Packages --------------------------------------------------------------
 ##  package        * version date       lib source        
@@ -305,6 +305,7 @@ R-session information for content in this document is as follows:
 ##  colorspace       1.3-2   2016-12-14 [1] CRAN (R 3.5.1)
 ##  crayon           1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
 ##  crosstalk        1.0.0   2016-12-21 [1] CRAN (R 3.5.1)
+##  data.table       1.11.8  2018-09-30 [1] CRAN (R 3.5.1)
 ##  debugme          1.1.0   2017-10-22 [1] CRAN (R 3.5.1)
 ##  desc             1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
 ##  devtools         2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
@@ -318,12 +319,12 @@ R-session information for content in this document is as follows:
 ##  htmlwidgets      1.3     2018-09-30 [1] CRAN (R 3.5.1)
 ##  httpuv           1.4.5   2018-07-19 [1] CRAN (R 3.5.1)
 ##  igraph           1.2.2   2018-07-27 [1] CRAN (R 3.5.1)
-##  inlmisc          0.4.4   2018-11-02 [1] local         
+##  inlmisc          0.4.4   2018-11-08 [1] CRAN (R 3.5.1)
 ##  intervals        0.15.1  2015-08-27 [1] CRAN (R 3.5.0)
 ##  jsonlite         1.5     2017-06-01 [1] CRAN (R 3.5.1)
 ##  knitr            1.20    2018-02-20 [1] CRAN (R 3.5.1)
 ##  later            0.7.5   2018-09-18 [1] CRAN (R 3.5.1)
-##  lattice          0.20-35 2017-03-25 [1] CRAN (R 3.5.1)
+##  lattice          0.20-38 2018-11-04 [1] CRAN (R 3.5.1)
 ##  leaflet          2.0.2   2018-08-27 [1] CRAN (R 3.5.1)
 ##  leaflet.extras   1.0.0   2018-04-21 [1] CRAN (R 3.5.1)
 ##  magrittr         1.5     2014-11-22 [1] CRAN (R 3.5.1)
@@ -336,10 +337,10 @@ R-session information for content in this document is as follows:
 ##  prettyunits      1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
 ##  processx         3.2.0   2018-08-16 [1] CRAN (R 3.5.1)
 ##  promises         1.0.1   2018-04-13 [1] CRAN (R 3.5.1)
-##  ps               1.2.0   2018-10-16 [1] CRAN (R 3.5.1)
+##  ps               1.2.1   2018-11-06 [1] CRAN (R 3.5.1)
 ##  R6               2.3.0   2018-10-04 [1] CRAN (R 3.5.1)
-##  raster           2.7-15  2018-10-16 [1] CRAN (R 3.5.1)
-##  Rcpp             0.12.19 2018-10-01 [1] CRAN (R 3.5.1)
+##  raster           2.8-4   2018-11-03 [1] CRAN (R 3.5.1)
+##  Rcpp             1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
 ##  remotes          2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
 ##  rgdal            1.3-6   2018-10-16 [1] CRAN (R 3.5.1)
 ##  rgeos            0.4-1   2018-10-19 [1] CRAN (R 3.5.1)
@@ -347,8 +348,8 @@ R-session information for content in this document is as follows:
 ##  rmarkdown        1.10    2018-06-11 [1] CRAN (R 3.5.1)
 ##  rprojroot        1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
 ##  scales           1.0.0   2018-08-09 [1] CRAN (R 3.5.1)
-##  sessioninfo      1.1.0   2018-09-25 [1] CRAN (R 3.5.1)
-##  shiny            1.1.0   2018-05-17 [1] CRAN (R 3.5.1)
+##  sessioninfo      1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
+##  shiny            1.2.0   2018-11-02 [1] CRAN (R 3.5.1)
 ##  sp               1.3-1   2018-06-05 [1] CRAN (R 3.5.1)
 ##  spacetime        1.2-2   2018-07-17 [1] CRAN (R 3.5.1)
 ##  stringi          1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
@@ -357,7 +358,7 @@ R-session information for content in this document is as follows:
 ##  usethis          1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
 ##  withr            2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
 ##  xtable           1.8-3   2018-08-29 [1] CRAN (R 3.5.1)
-##  xts              0.11-1  2018-09-12 [1] CRAN (R 3.5.1)
+##  xts              0.11-2  2018-11-05 [1] CRAN (R 3.5.1)
 ##  yaml             2.2.0   2018-07-25 [1] CRAN (R 3.5.1)
 ##  zoo              1.8-4   2018-09-19 [1] CRAN (R 3.5.1)
 ## 
