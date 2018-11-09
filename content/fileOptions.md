@@ -1,12 +1,12 @@
 ---
 author: Laura DeCicco
-date: 2018-11-7
+date: 2018-11-07
 slug: formats
 draft: True
 title: Pretty big data… now what?
 type: post
 categories: Data Science
-image: static/formats/visualizeBox-1.png
+image: static/comparison.jpg
 author_twitter: DeCiccoDonk
 author_github: ldecicco-usgs
 author_gs: jXd0feEAAAAJ
@@ -80,20 +80,23 @@ Not being an expert, I asked and got great advice from members of the
     database can help add change tracking and important constraints to
     data inputs. If you have multiple things that interact like sites,
     species, field people, measurement classes, complicated
-    requested\_date concepts etc then the db can help.” (Steph Locke)
+    requested\_date concepts etc then the db can help.” [Steph
+    Locke](https://twitter.com/TheStephLocke)
 
--   “One thing to consider is whether the data are uprequested\_dated
-    and how and by single or multiple processes.” (Elin Waring)
+-   “One thing to consider is whether the data are updated and how, and
+    by single or multiple processes.” [Elin
+    Waring](https://twitter.com/ElinWaring)
 
 -   “I encourage people towards databases when/if they need to make use
     of all the validation logic you can put into databases. If they just
     need to query, a pattern I like is to keep the data in a text-based
     format like CSV/TSV and load the data into sqlite for querying.”
-    (Bryce Mecum)
+    [Bryce Mecum](https://twitter.com/brycem)
 
 -   “I suppose another criterion is whether multiple people need to
     access the same data or just a solo user. Concurrency afforded by
-    DBs is nice in that regard.” (James Balamuta)
+    DBs is nice in that regard.” [James
+    Balamuta](https://twitter.com/axiomsofxyz)
 
 All great points! In the majority of our data science projects, the
 focus is not on creating and maintaining complex data systems…it’s using
@@ -114,7 +117,14 @@ like to minimize the time to read and write the files. Maintaining
 attributes (like column types) is also ideal.
 
 I will be using a large data frame to test `data.table`,`readr`, `fst`,
-`feather`, `sqlite`, `MonetDBLite`, `sparklyr`.
+`feather`, `sqlite`, and `MonetDBLite`. Late in the game, I tried to
+incorporate `sparklyr` into this analysis. `sparklyr` looks and sounds
+like an appealing option especially for “really big data”. I was not
+able to get my standard examples presented here to work however. Also,
+the dependency on a specific version of Java made me nervous (at least,
+at the time of writing this blog post). So, while it might be an
+attractive solution, there was a bit too much of a learning curve for
+the needs of our group.
 
 What is in the data frame is not important to this analysis. Keep in
 mind your own personal “biggish” data frame and your hardware might have
@@ -176,7 +186,7 @@ rds_df <- readRDS(file_name)
 ```
 
 RDS files must be read entirely in memory so partial read times are not
-applicible. However, I will use 2 examples throughout to test the
+applicable. However, I will use 2 examples throughout to test the
 timings. The examples are deliberately set up to test many `dplyr` basic
 verbs and various data types, and other tricky situations like
 timezones.
@@ -239,7 +249,7 @@ attr(readr_df$requested_date, "tzone") <- "America/New_York"
 ```
 
 `readr` also must be read entirely in memory so partial read times are
-not applicible. If there’s a known, continuous set of rows, you can use
+not applicable. If there’s a known, continuous set of rows, you can use
 the arguments “skip” and “n\_max” to pull just what you need. However,
 that is not flexible enough for most of our needs, so I am not including
 that in this evaluation.
@@ -602,42 +612,6 @@ dbDisconnect(con, shutdown=TRUE)
 |:--------|-----:|------:|--------:|---------:|
 | MonetDB |     3|   30.2|      1.6|       1.3|
 
-sparklyr
---------
-
-Late in the game, I thought I’d try `sparklyr`. The following code
-involved some serious trial-and-error, and I don’t claim to promise it
-is the most efficient.
-
-``` r
-library(sparklyr)
-
-config <- spark_config()
-config$`sparklyr.shell.driver-memory` <- "20G"
-config$spark.memory.fraction <- 0.9
-
-sc <- spark_connect(master = "local", config = config)
-
-# Write:
-spark_tbl <- copy_to(sc, df = biggish, name = "test")
-spark_write_csv(sdf_coalesce(sp_df_tbl, partitions = 1), 
-                path = "test_spark.csv", mode = "overwrite")
-
-# Read:
-spark_df <- spark_read_csv(sc, name = "test", path = "test.csv")
-```
-
-``` r
-min_bytes <- 100000
-param_cd <- "00060"
-group_col <- "statecd"
-service <- "dv"
-
-# Partial Read:
-
-# Group and summarize:
-```
-
 Comparison
 ==========
 
@@ -868,9 +842,9 @@ MonetDB
 </tbody>
 </table>
 Not that `sqlite` and `MonetDB` are the only formats here that allow
-careful filtering and calculate summaries without loading the whole
-dataset. So if our “pretty big data” gets “really big”, those will
-formats will rise to the top.
+careful filtering and calculate summaries without loading the whole data
+set. So if our “pretty big data” gets “really big”, those will formats
+will rise to the top.
 
 If you can read in all the rows without crashing R, `fread`, `feather`,
 and `fst` are fast!
@@ -878,9 +852,14 @@ and `fst` are fast!
 Another consideration, who are your collaborators? If everyone’s using R
 exclusively, this table on it’s own is a fine way to judge what format
 to pick. If your collaborators are half R, half Python…you might favor
-`feather` since that format works well in both systems. Likewise, if
-your collaborators “need” a csv….you can eliminate formats that aren’t
-easily exported to a csv.
+`feather` since that format works well in both systems.
+
+Collecting this information has been a very useful activity for helping
+me understand the various options for saving and reading data in R. I
+tried to pick somewhat complex queries to test out the capabilities, but
+I acknowledge I’m not an expert on especially the database formats. I
+would be very happy to hear more efficient ways to perform these
+analyses.
 
 Disclaimer
 ==========

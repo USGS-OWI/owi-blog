@@ -4,7 +4,7 @@ slug: "formats"
 author: "Laura DeCicco"
 date: "2018-11-07"
 always_allow_html: yes
-image: "static/formats/visualizeBox-1.png"
+image: "static/comparison.jpg"
 keyword1: files
 keyword2: io
 output: USGSmarkdowntemplates::hugo
@@ -59,13 +59,13 @@ If a single file can be easily passed around to coworkers, and loaded entirely i
 
 Not being an expert, I asked and got great advice from members of the [rOpenSci](https://ropensci.org/) community. This is what I learned:
 
-* "Identify how much CRUD (create, read, uprequested_date, delete) you need to do over time and how complicated your conceptual model is. If you need people to be interacting and changing data a shared database can help add change tracking and important constraints to data inputs. If you have multiple things that interact like sites, species, field people, measurement classes, complicated requested_date concepts etc then the db can help." (Steph Locke)
+* "Identify how much CRUD (create, read, uprequested_date, delete) you need to do over time and how complicated your conceptual model is. If you need people to be interacting and changing data a shared database can help add change tracking and important constraints to data inputs. If you have multiple things that interact like sites, species, field people, measurement classes, complicated requested_date concepts etc then the db can help." [Steph Locke](https://twitter.com/TheStephLocke)
 
-* "One thing to consider is whether the data are uprequested_dated and how and by single or multiple processes." (Elin Waring)
+* "One thing to consider is whether the data are updated and how, and by single or multiple processes." [Elin Waring](https://twitter.com/ElinWaring)
 
-* "I encourage people towards databases when/if they need to make use of all the validation logic you can put into databases. If they just need to query, a pattern I like is to keep the data in a text-based format like CSV/TSV and load the data into sqlite for querying." (Bryce Mecum)
+* "I encourage people towards databases when/if they need to make use of all the validation logic you can put into databases. If they just need to query, a pattern I like is to keep the data in a text-based format like CSV/TSV and load the data into sqlite for querying." [Bryce Mecum](https://twitter.com/brycem)
 
-* "I suppose another criterion is whether multiple people need to access the same data or just a solo user. Concurrency afforded by DBs is nice in that regard." (James Balamuta)
+* "I suppose another criterion is whether multiple people need to access the same data or just a solo user. Concurrency afforded by DBs is nice in that regard." [James Balamuta](https://twitter.com/axiomsofxyz)
 
 All great points! In the majority of our data science projects, the focus is not on creating and maintaining complex data systems...it's using large amounts of data. Most if not all of that data already come from other databases (usually through web services). So...the big benefits for setting up a shared database for our projects at the moment seems unnecessary. 
 
@@ -73,7 +73,7 @@ All great points! In the majority of our data science projects, the focus is not
 
 OK, so we don't need to buy an Oracle license. We still want to make a smart choice in the way we save and access the data. We usually have 1-to-many file(s) that we share between a few people. So, we'll want to minimize the file size to reduce that transfer time (we have used Google drive and S3 buckets to store files to share historically). We'd also like to minimize the time to read and write the files. Maintaining attributes (like column types) is also ideal.
 
-I will be using a large data frame to test `data.table`,`readr`, `fst`, `feather`, `sqlite`, `MonetDBLite`, `sparklyr`. 
+I will be using a large data frame to test `data.table`,`readr`, `fst`, `feather`, `sqlite`, and `MonetDBLite`. Late in the game, I tried to incorporate `sparklyr` into this analysis. `sparklyr` looks and sounds like an appealing option especially for "really big data". I was not able to get my standard examples presented here to work however. Also, the dependency on a specific version of Java made me nervous (at least, at the time of writing this blog post). So, while it might be an attractive solution, there was a bit too much of a learning curve for the needs of our group.
 
 What is in the data frame is not important to this analysis. Keep in mind your own personal "biggish" data frame and your hardware might have different results. 
 
@@ -109,7 +109,7 @@ saveRDS(biggish, file = file_name, compress = FALSE)
 rds_df <- readRDS(file_name)
 ```
 
-RDS files must be read entirely in memory so partial read times are not applicible. However, I will use 2 examples throughout to test the timings. The examples are deliberately set up to test many `dplyr` basic verbs and various data types, and other tricky situations like timezones.
+RDS files must be read entirely in memory so partial read times are not applicable. However, I will use 2 examples throughout to test the timings. The examples are deliberately set up to test many `dplyr` basic verbs and various data types, and other tricky situations like timezones.
 
 ```{r ds_no_compress_grouping, eval=FALSE}
 min_bytes <- 100000
@@ -259,7 +259,7 @@ readr_df <- read_csv(file_name)
 attr(readr_df$requested_date, "tzone") <- "America/New_York"
 ```
 
-`readr` also must be read entirely in memory so partial read times are not applicible. If there's a known, continuous set of rows, you can use the arguments "skip" and "n_max" to pull just what you need. However, that is not flexible enough for most of our needs, so I am not including that in this evaluation.
+`readr` also must be read entirely in memory so partial read times are not applicable. If there's a known, continuous set of rows, you can use the arguments "skip" and "n_max" to pull just what you need. However, that is not flexible enough for most of our needs, so I am not including that in this evaluation.
 
 ```{r readr_partial, eval=FALSE}
 min_bytes <- 100000
@@ -899,41 +899,6 @@ knitr::kable(read_write_monet, digits = 1)
 
 ```
 
-## sparklyr
-
-Late in the game, I thought I'd try `sparklyr`. The following code involved some serious trial-and-error, and I don't claim to promise it is the most efficient.
-
-```{r sparklyr, eval=FALSE}
-library(sparklyr)
-
-config <- spark_config()
-config$`sparklyr.shell.driver-memory` <- "20G"
-config$spark.memory.fraction <- 0.9
-
-sc <- spark_connect(master = "local", config = config)
-
-# Write:
-spark_tbl <- copy_to(sc, df = biggish, name = "test")
-spark_write_csv(sdf_coalesce(sp_df_tbl, partitions = 1), 
-                path = "test_spark.csv", mode = "overwrite")
-
-# Read:
-spark_df <- spark_read_csv(sc, name = "test", path = "test.csv")
-
-```
-
-```{r sparklyr_partial, eval=FALSE}
-min_bytes <- 100000
-param_cd <- "00060"
-group_col <- "statecd"
-service <- "dv"
-
-# Partial Read:
-
-# Group and summarize:
-
-```
-
 
 # Comparison
 
@@ -947,14 +912,12 @@ tested <- c("rds","rds_compressed",
             "fread","feather",
             "fst","fst_compressed",
             "sqlite","monetDB"
-            # "sparklyr"
             )
 file_name <- setNames(c("test.rds","test_compressed.rds",
                         "test_readr.csv","test_readr.csv.gz",
                         "test.csv","test.feather",
                         "test.fst", "test_compressed.fst",
                         "test.sqlite","test.montdb"
-                        # "test_sparklyr.csv"
                         ),tested)
 file_size <- c()
 
@@ -964,8 +927,6 @@ for(file_to_measure in names(file_name)){
 
 # MonetDB isn't really 0...it's a folder:
 file_size[["monetDB"]] <- sum(file.info(list.files(path = file_name[["monetDB"]],full.names = TRUE, all.files = TRUE, recursive = TRUE, include.dirs = TRUE))$size, na.rm = TRUE)
-
-# file_size[["sparklyr"]] <- sum(file.info(list.files(path = file_name[["sparklyr"]],full.names = TRUE, all.files = TRUE, recursive = TRUE, include.dirs = TRUE))$size, na.rm = TRUE)
 
 read_write$file_size <- round(as.numeric(file_size/10^6),digits = 1)
 
@@ -998,11 +959,13 @@ read_write_table <- read_write %>%
 read_write_table
 ```
 
-Not that `sqlite` and `MonetDB` are the only formats here that allow careful filtering and calculate summaries without loading the whole dataset. So if our "pretty big data" gets "really big", those will formats will rise to the top. 
+Not that `sqlite` and `MonetDB` are the only formats here that allow careful filtering and calculate summaries without loading the whole data set. So if our "pretty big data" gets "really big", those will formats will rise to the top. 
 
 If you can read in all the rows without crashing R, `fread`, `feather`, and `fst` are fast!
 
-Another consideration, who are your collaborators? If everyone's using R exclusively, this table on it's own is a fine way to judge what format to pick. If your collaborators are half R, half Python...you might favor `feather` since that format works well in both systems. Likewise, if your collaborators "need" a csv....you can eliminate formats that aren't easily exported to a csv.
+Another consideration, who are your collaborators? If everyone's using R exclusively, this table on it's own is a fine way to judge what format to pick. If your collaborators are half R, half Python...you might favor `feather` since that format works well in both systems. 
+
+Collecting this information has been a very useful activity for helping me understand the various options for saving and reading data in R. I tried to pick somewhat complex queries to test out the capabilities, but I acknowledge I'm not an expert on especially the database formats. I would be very happy to hear more efficient ways to perform these analyses. 
 
 
 # Disclaimer
