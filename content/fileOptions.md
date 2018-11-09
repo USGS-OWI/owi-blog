@@ -636,7 +636,9 @@ Timing in seconds:
 Again, it is important to note that the “partial” and “grouping”
 solutions are completely done outside of R. So when you are getting data
 that pushes the limits (or passes the limits) of what you can load
-directly into R, this is another good solution.
+directly into R, this is another good solution. There also appears to be
+a lot more flexibility in using date/times directly in MonetDB compared
+to SQLite.
 
 Comparison
 ==========
