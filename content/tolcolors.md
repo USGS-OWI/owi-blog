@@ -16,7 +16,6 @@ keywords:
   - R
   - inlmisc
 description: Qualitative, diverging, and sequential color schemes by Paul Tol.
-draft: True
 ---
 
 
