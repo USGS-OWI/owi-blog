@@ -18,7 +18,9 @@ keywords:
   - inlmisc
   - leaflet
 description: Using the R-package inlmisc to create static and dynamic maps.
+draft: True
 ---
+
 
 
 ## Introduction
@@ -63,7 +65,7 @@ Next, plot a map from the gridded data and include a scale bar and vertical lege
 
 
 ```r
-Pal <- function(n) inlmisc::GetTolColors(n, start=0.3, end=0.9)  # color palette
+Pal <- function(n) inlmisc::GetColors(n, stops = c(0.3, 0.9))  # color palette
 breaks <- seq(0, 2000, by = 200)  # break points used to partition colors
 credit <- paste("Data collected in a flood plain of the river Meuse,",
                 "near the village of Stein (Netherlands),",
@@ -279,66 +281,86 @@ R-session information for content in this document is as follows:
 
 
 ```
+## - Session info ----------------------------------------------------------
 ##  setting  value                       
 ##  version  R version 3.5.1 (2018-07-02)
+##  os       Windows 10 x64              
 ##  system   x86_64, mingw32             
 ##  ui       Rgui                        
 ##  language (EN)                        
 ##  collate  English_United States.1252  
+##  ctype    English_United States.1252  
 ##  tz       America/Los_Angeles         
-##  date     2018-09-10                  
+##  date     2018-11-08                  
 ## 
-##  package        * version date       source        
-##  backports        1.1.2   2017-12-13 CRAN (R 3.5.0)
-##  base           * 3.5.1   2018-07-02 local         
-##  checkmate        1.8.5   2017-10-24 CRAN (R 3.5.1)
-##  compiler         3.5.1   2018-07-02 local         
-##  crosstalk        1.0.0   2016-12-21 CRAN (R 3.5.1)
-##  datasets       * 3.5.1   2018-07-02 local         
-##  devtools         1.13.6  2018-06-27 CRAN (R 3.5.1)
-##  digest           0.6.16  2018-08-22 CRAN (R 3.5.1)
-##  evaluate         0.11    2018-07-17 CRAN (R 3.5.1)
-##  FNN              1.1.2.1 2018-08-10 CRAN (R 3.5.1)
-##  graphics       * 3.5.1   2018-07-02 local         
-##  grDevices      * 3.5.1   2018-07-02 local         
-##  grid             3.5.1   2018-07-02 local         
-##  gstat            1.1-6   2018-04-02 CRAN (R 3.5.1)
-##  htmltools        0.3.6   2017-04-28 CRAN (R 3.5.1)
-##  htmlwidgets      1.2     2018-04-19 CRAN (R 3.5.1)
-##  httpuv           1.4.5   2018-07-19 CRAN (R 3.5.1)
-##  igraph           1.2.2   2018-07-27 CRAN (R 3.5.1)
-##  inlmisc          0.4.3   2018-09-10 CRAN (R 3.5.1)
-##  intervals        0.15.1  2015-08-27 CRAN (R 3.5.0)
-##  jsonlite         1.5     2017-06-01 CRAN (R 3.5.1)
-##  knitr            1.20    2018-02-20 CRAN (R 3.5.1)
-##  later            0.7.4   2018-08-31 CRAN (R 3.5.1)
-##  lattice          0.20-35 2017-03-25 CRAN (R 3.5.1)
-##  leaflet          2.0.2   2018-08-27 CRAN (R 3.5.1)
-##  leaflet.extras   1.0.0   2018-04-21 CRAN (R 3.5.1)
-##  magrittr         1.5     2014-11-22 CRAN (R 3.5.1)
-##  memoise          1.1.0   2017-04-21 CRAN (R 3.5.1)
-##  methods        * 3.5.1   2018-07-02 local         
-##  mime             0.5     2016-07-07 CRAN (R 3.5.0)
-##  pkgconfig        2.0.2   2018-08-16 CRAN (R 3.5.1)
-##  promises         1.0.1   2018-04-13 CRAN (R 3.5.1)
-##  R6               2.2.2   2017-06-17 CRAN (R 3.5.1)
-##  raster           2.6-7   2017-11-13 CRAN (R 3.5.1)
-##  Rcpp             0.12.18 2018-07-23 CRAN (R 3.5.1)
-##  rgdal            1.3-4   2018-08-03 CRAN (R 3.5.1)
-##  rgeos            0.3-28  2018-06-08 CRAN (R 3.5.1)
-##  rmarkdown        1.10    2018-06-11 CRAN (R 3.5.1)
-##  rprojroot        1.3-2   2018-01-03 CRAN (R 3.5.1)
-##  shiny            1.1.0   2018-05-17 CRAN (R 3.5.1)
-##  sp               1.3-1   2018-06-05 CRAN (R 3.5.1)
-##  spacetime        1.2-2   2018-07-17 CRAN (R 3.5.1)
-##  stats          * 3.5.1   2018-07-02 local         
-##  stringi          1.2.4   2018-07-20 CRAN (R 3.5.1)
-##  stringr          1.3.1   2018-05-10 CRAN (R 3.5.1)
-##  tools            3.5.1   2018-07-02 local         
-##  utils          * 3.5.1   2018-07-02 local         
-##  withr            2.1.2   2018-03-15 CRAN (R 3.5.1)
-##  xtable           1.8-3   2018-08-29 CRAN (R 3.5.1)
-##  xts              0.11-0  2018-07-16 CRAN (R 3.5.1)
-##  yaml             2.2.0   2018-07-25 CRAN (R 3.5.1)
-##  zoo              1.8-3   2018-07-16 CRAN (R 3.5.1)
+## - Packages --------------------------------------------------------------
+##  package        * version date       lib source        
+##  assertthat       0.2.0   2017-04-11 [1] CRAN (R 3.5.1)
+##  backports        1.1.2   2017-12-13 [1] CRAN (R 3.5.0)
+##  base64enc        0.1-3   2015-07-28 [1] CRAN (R 3.5.0)
+##  callr            3.0.0   2018-08-24 [1] CRAN (R 3.5.1)
+##  checkmate        1.8.5   2017-10-24 [1] CRAN (R 3.5.1)
+##  cli              1.0.1   2018-09-25 [1] CRAN (R 3.5.1)
+##  codetools        0.2-15  2016-10-05 [1] CRAN (R 3.5.1)
+##  colorspace       1.3-2   2016-12-14 [1] CRAN (R 3.5.1)
+##  crayon           1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
+##  crosstalk        1.0.0   2016-12-21 [1] CRAN (R 3.5.1)
+##  data.table       1.11.8  2018-09-30 [1] CRAN (R 3.5.1)
+##  debugme          1.1.0   2017-10-22 [1] CRAN (R 3.5.1)
+##  desc             1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
+##  devtools         2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
+##  digest           0.6.18  2018-10-10 [1] CRAN (R 3.5.1)
+##  evaluate         0.12    2018-10-09 [1] CRAN (R 3.5.1)
+##  FNN              1.1.2.1 2018-08-10 [1] CRAN (R 3.5.1)
+##  fs               1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
+##  glue             1.3.0   2018-07-17 [1] CRAN (R 3.5.1)
+##  gstat            1.1-6   2018-04-02 [1] CRAN (R 3.5.1)
+##  htmltools        0.3.6   2017-04-28 [1] CRAN (R 3.5.1)
+##  htmlwidgets      1.3     2018-09-30 [1] CRAN (R 3.5.1)
+##  httpuv           1.4.5   2018-07-19 [1] CRAN (R 3.5.1)
+##  igraph           1.2.2   2018-07-27 [1] CRAN (R 3.5.1)
+##  inlmisc          0.4.4   2018-11-08 [1] CRAN (R 3.5.1)
+##  intervals        0.15.1  2015-08-27 [1] CRAN (R 3.5.0)
+##  jsonlite         1.5     2017-06-01 [1] CRAN (R 3.5.1)
+##  knitr            1.20    2018-02-20 [1] CRAN (R 3.5.1)
+##  later            0.7.5   2018-09-18 [1] CRAN (R 3.5.1)
+##  lattice          0.20-38 2018-11-04 [1] CRAN (R 3.5.1)
+##  leaflet          2.0.2   2018-08-27 [1] CRAN (R 3.5.1)
+##  leaflet.extras   1.0.0   2018-04-21 [1] CRAN (R 3.5.1)
+##  magrittr         1.5     2014-11-22 [1] CRAN (R 3.5.1)
+##  memoise          1.1.0   2017-04-21 [1] CRAN (R 3.5.1)
+##  mime             0.6     2018-10-05 [1] CRAN (R 3.5.1)
+##  munsell          0.5.0   2018-06-12 [1] CRAN (R 3.5.1)
+##  pkgbuild         1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
+##  pkgconfig        2.0.2   2018-08-16 [1] CRAN (R 3.5.1)
+##  pkgload          1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
+##  prettyunits      1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
+##  processx         3.2.0   2018-08-16 [1] CRAN (R 3.5.1)
+##  promises         1.0.1   2018-04-13 [1] CRAN (R 3.5.1)
+##  ps               1.2.1   2018-11-06 [1] CRAN (R 3.5.1)
+##  R6               2.3.0   2018-10-04 [1] CRAN (R 3.5.1)
+##  raster           2.8-4   2018-11-03 [1] CRAN (R 3.5.1)
+##  Rcpp             1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
+##  remotes          2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
+##  rgdal            1.3-6   2018-10-16 [1] CRAN (R 3.5.1)
+##  rgeos            0.4-1   2018-10-19 [1] CRAN (R 3.5.1)
+##  rlang            0.3.0.1 2018-10-25 [1] CRAN (R 3.5.1)
+##  rmarkdown        1.10    2018-06-11 [1] CRAN (R 3.5.1)
+##  rprojroot        1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
+##  scales           1.0.0   2018-08-09 [1] CRAN (R 3.5.1)
+##  sessioninfo      1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
+##  shiny            1.2.0   2018-11-02 [1] CRAN (R 3.5.1)
+##  sp               1.3-1   2018-06-05 [1] CRAN (R 3.5.1)
+##  spacetime        1.2-2   2018-07-17 [1] CRAN (R 3.5.1)
+##  stringi          1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
+##  stringr          1.3.1   2018-05-10 [1] CRAN (R 3.5.1)
+##  testthat         2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
+##  usethis          1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
+##  withr            2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
+##  xtable           1.8-3   2018-08-29 [1] CRAN (R 3.5.1)
+##  xts              0.11-2  2018-11-05 [1] CRAN (R 3.5.1)
+##  yaml             2.2.0   2018-07-25 [1] CRAN (R 3.5.1)
+##  zoo              1.8-4   2018-09-19 [1] CRAN (R 3.5.1)
+## 
+## [1] C:/Users/jfisher/Tools/R/R-3.5.1/library
 ```

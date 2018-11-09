@@ -86,7 +86,7 @@ r <- raster::mask(r, meuse.grid)
 Next, plot a map from the gridded data and include a scale bar and vertical legend.
 
 ```{r plot_meuse, fig.cap="Static map of meuse data set.", alt.text="Static map of meuse data set."}
-Pal <- function(n) inlmisc::GetTolColors(n, start=0.3, end=0.9)  # color palette
+Pal <- function(n) inlmisc::GetColors(n, stops = c(0.3, 0.9))  # color palette
 breaks <- seq(0, 2000, by = 200)  # break points used to partition colors
 credit <- paste("Data collected in a flood plain of the river Meuse,",
                 "near the village of Stein (Netherlands),",

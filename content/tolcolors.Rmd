@@ -61,7 +61,7 @@ that address this very issue, such as the
 And because this is R, where diversity is king,
 why not offer one more function for creating color blind friendly palettes.
 
-Let me introduce the `GetTolColors` function in the R-package
+Let me introduce the `GetColors` function in the R-package
 [inlmisc](https://CRAN.R-project.org/package=inlmisc).
 This function generates a vector of colors from qualitative, diverging,
 and sequential color schemes by [Paul Tol (2018)](https://personal.sron.nl/~pault/data/colourschemes.pdf).
@@ -83,15 +83,15 @@ if (system.file(package = "inlmisc", lib.loc = .libPaths()) == "")
 And if you're so inclined, read through the function documentation.
 
 ```{r help, eval=FALSE}
-utils::help("GetTolColors", package = "inlmisc")
+utils::help("GetColors", package = "inlmisc")
 ```
 
 Like almost every other R function used to create a color palette,
-`GetTolColors` takes as its first argument the number of colors to be in the returned palette (`n`).
+`GetColors` takes as its first argument the number of colors to be in the returned palette (`n`).
 For example, the following command generates a palette of 10 colors using default values for function arguments.
 
 ```{r print}
-cols <- inlmisc::GetTolColors(n = 10)
+cols <- inlmisc::GetColors(n = 10)
 print(cols)
 ```
 
@@ -116,7 +116,7 @@ The label positioned below each shaded rectangle gives the informal color name.
 
 ## Color Schemes
 
-Tal (2018) defines 13 color schemes:
+Tol (2018) defines 13 color schemes:
 7 for qualitative data, 3 for diverging data, and 3 for sequential data (table 1).
 The maximum number of colors in a generated palette is dependent on the user selected scheme.
 For example, the `"discrete rainbow"` scheme can have at most 23 colors in its palette (`n` &le; 23).
@@ -126,6 +126,7 @@ About half of the schemes include a color meant for bad data.
 
 ```{r table, echo=FALSE, results="asis"}
 m <- rbind(c("Qualitative", "bright",           "7 (3)", "no"),
+           c("Qualitative", "high-contrast",    "5 (5)", "no"),
            c("Qualitative", "vibrant",          "7 (4)", "no"),
            c("Qualitative", "muted",            "9 (5)", "yes"),
            c("Qualitative", "pale",             "6",     "no"),
@@ -136,6 +137,7 @@ m <- rbind(c("Qualitative", "bright",           "7 (3)", "no"),
            c("Diverging",   "BuRd",             "---",   "yes"),
            c("Diverging",   "PRGn",             "---",   "yes"),
            c("Sequential",  "YlOrBr",           "---",   "yes"),
+           c("Sequential",  "iridescent",       "---",   "yes"),
            c("Sequential",  "discrete rainbow", "23",    "yes"),
            c("Sequential",  "smooth rainbow",   "---",   "yes"))
 d <- as.data.frame(m, stringsAsFactors=FALSE)
@@ -156,17 +158,18 @@ knitr::kable(d, "html", align=c("l", "l", "r", "c"), caption=caption, table.attr
 
 ### Qualitative
 
-Qualitative color schemes `"bright"`, `"vibrant"`, `"muted"`, `"pale"`, `"dark"`, and `"light"`
+Qualitative color schemes `"bright"`, `"vibrant"`, `"muted"`, `"pale"`, `"dark"`, `"light"`, and `"high-contrast"`
 are appropriate for representing nominal or categorical data.
 
-```{r qualitative, fig.height=6, fig.show="hold", fig.cap="Qualitative color schemes", alt.text="Qualitative color schemes"}
-op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(7, scheme = "bright"))
-plot(inlmisc::GetTolColors(7, scheme = "vibrant"))
-plot(inlmisc::GetTolColors(9, scheme = "muted"))
-plot(inlmisc::GetTolColors(6, scheme = "pale"))
-plot(inlmisc::GetTolColors(6, scheme = "dark"))
-plot(inlmisc::GetTolColors(9, scheme = "light"))
+```{r qualitative, fig.height=7, fig.show="hold", fig.cap="Qualitative color schemes", alt.text="Qualitative color schemes"}
+op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(7, scheme = "bright"))
+plot(inlmisc::GetColors(7, scheme = "vibrant"))
+plot(inlmisc::GetColors(9, scheme = "muted"))
+plot(inlmisc::GetColors(6, scheme = "pale"))
+plot(inlmisc::GetColors(6, scheme = "dark"))
+plot(inlmisc::GetColors(9, scheme = "light"))
+plot(inlmisc::GetColors(5, scheme = "high-contrast"))
 graphics::par(op)
 ```
 
@@ -176,7 +179,7 @@ global land cover classification color scheme (Hansen and others, 1998).
 
 ```{r cover, fig.height=1.2, fig.show="hold", fig.cap="Land cover color scheme", alt.text="Land cover color scheme"}
 op <- graphics::par(oma = c(1, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(14, scheme = "ground cover"))
+plot(inlmisc::GetColors(14, scheme = "ground cover"))
 graphics::par(op)
 ```
 
@@ -190,27 +193,29 @@ quantitative data with progressions outward from a critical midpoint of the data
 
 ```{r diverging, fig.height=6, fig.show="hold", fig.cap="Diverging color schemes", alt.text="Diverging color schemes"}
 op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors( 11, scheme = "sunset"))
-plot(inlmisc::GetTolColors(256, scheme = "sunset"))
-plot(inlmisc::GetTolColors(  9, scheme = "BuRd"))
-plot(inlmisc::GetTolColors(256, scheme = "BuRd"))
-plot(inlmisc::GetTolColors(  9, scheme = "PRGn"))
-plot(inlmisc::GetTolColors(256, scheme = "PRGn"))
+plot(inlmisc::GetColors( 11, scheme = "sunset"))
+plot(inlmisc::GetColors(256, scheme = "sunset"))
+plot(inlmisc::GetColors(  9, scheme = "BuRd"))
+plot(inlmisc::GetColors(256, scheme = "BuRd"))
+plot(inlmisc::GetColors(  9, scheme = "PRGn"))
+plot(inlmisc::GetColors(256, scheme = "PRGn"))
 graphics::par(op)
 ```
 
 ### Sequential
 
-Sequential schemes `"YlOrBr"`, `"discrete rainbow"`, and `"smooth rainbow"` are appropriate for representing
+Sequential schemes `"YlOrBr"`, `"iridescent"`, `"discrete rainbow"`, and `"smooth rainbow"` are appropriate for representing
 quantitative data that progress from small to large values.
 
-```{r sequential, fig.height=5, fig.show="hold", fig.cap="Sequential color schemes", alt.text="Sequential color schemes"}
-op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(  9, scheme = "YlOrBr"))
-plot(inlmisc::GetTolColors(256, scheme = "YlOrBr"))
-plot(inlmisc::GetTolColors( 23, scheme = "discrete rainbow"))
-plot(inlmisc::GetTolColors( 34, scheme = "smooth rainbow"))
-plot(inlmisc::GetTolColors(256, scheme = "smooth rainbow"))
+```{r sequential, fig.height=7, fig.show="hold", fig.cap="Sequential color schemes", alt.text="Sequential color schemes"}
+op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(  9, scheme = "YlOrBr"))
+plot(inlmisc::GetColors(256, scheme = "YlOrBr"))
+plot(inlmisc::GetColors( 23, scheme = "iridescent"))
+plot(inlmisc::GetColors(255, scheme = "iridescent"))
+plot(inlmisc::GetColors( 23, scheme = "discrete rainbow"))
+plot(inlmisc::GetColors( 34, scheme = "smooth rainbow"))
+plot(inlmisc::GetColors(256, scheme = "smooth rainbow"))
 graphics::par(op)
 ```
 
@@ -222,11 +227,11 @@ Values range from 0 (fully transparent) to 1 (fully opaque).
 
 ```{r alpha, fig.height=5, fig.show="hold", fig.cap="Adjust alpha transparency of colors.", alt.text="Adjust alpha transparency of colors."}
 op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(34, alpha = 1.0))
-plot(inlmisc::GetTolColors(34, alpha = 0.8))
-plot(inlmisc::GetTolColors(34, alpha = 0.6))
-plot(inlmisc::GetTolColors(34, alpha = 0.4))
-plot(inlmisc::GetTolColors(34, alpha = 0.2))
+plot(inlmisc::GetColors(34, alpha = 1.0))
+plot(inlmisc::GetColors(34, alpha = 0.8))
+plot(inlmisc::GetColors(34, alpha = 0.6))
+plot(inlmisc::GetColors(34, alpha = 0.4))
+plot(inlmisc::GetColors(34, alpha = 0.2))
 graphics::par(op)
 ```
 
@@ -239,10 +244,10 @@ Values range from 0 to 1 and represent a fraction of the scheme's color domain.
 
 ```{r levels, fig.height=4, fig.show="hold", fig.cap="Adjust starting and ending color levels.", alt.text="Adjust starting and ending color levels."}
 op <- graphics::par(mfrow = c(4, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(256, start = 0.0, end = 1.0))
-plot(inlmisc::GetTolColors(256, start = 0.0, end = 0.5))
-plot(inlmisc::GetTolColors(256, start = 0.5, end = 1.0))
-plot(inlmisc::GetTolColors(256, start = 0.3, end = 0.9))
+plot(inlmisc::GetColors(256, stops = c(0.0, 1.0)))
+plot(inlmisc::GetColors(256, stops = c(0.0, 0.5)))
+plot(inlmisc::GetColors(256, stops = c(0.5, 1.0)))
+plot(inlmisc::GetColors(256, stops = c(0.3, 0.9)))
 graphics::par(op)
 ```
 
@@ -254,13 +259,13 @@ and larger values result in more widely spaced colors at the high end.
 
 ```{r bias, fig.height=7, fig.show="hold", fig.cap="Adjust interpolation bias.", alt.text="Adjust interpolation bias."}
 op <- graphics::par(mfrow = c(7, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(256, bias = 0.4))
-plot(inlmisc::GetTolColors(256, bias = 0.6))
-plot(inlmisc::GetTolColors(256, bias = 0.8))
-plot(inlmisc::GetTolColors(256, bias = 1.0))
-plot(inlmisc::GetTolColors(256, bias = 1.2))
-plot(inlmisc::GetTolColors(256, bias = 1.4))
-plot(inlmisc::GetTolColors(256, bias = 1.6))
+plot(inlmisc::GetColors(256, bias = 0.4))
+plot(inlmisc::GetColors(256, bias = 0.6))
+plot(inlmisc::GetColors(256, bias = 0.8))
+plot(inlmisc::GetColors(256, bias = 1.0))
+plot(inlmisc::GetColors(256, bias = 1.2))
+plot(inlmisc::GetColors(256, bias = 1.4))
+plot(inlmisc::GetColors(256, bias = 1.6))
 graphics::par(op)
 ```
 
@@ -270,8 +275,8 @@ Reverse the order of colors in a palette by specifying the `reverse` argument as
 
 ```{r reverse, fig.height=2, fig.show="hold", fig.cap="Reverse colors in palette.", alt.text="Reverse colors in palette."}
 op <- graphics::par(mfrow = c(2, 1), oma = c(0, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(10, reverse = FALSE))
-plot(inlmisc::GetTolColors(10, reverse = TRUE))
+plot(inlmisc::GetColors(10, reverse = FALSE))
+plot(inlmisc::GetColors(10, reverse = TRUE))
 graphics::par(op)
 ```
 
@@ -283,11 +288,11 @@ specify `"deutan"` for green-blind vision, `"protan"` for red-blind vision,
 
 ```{r blind, fig.height=5, fig.show="hold", fig.cap="Adjust for color blindness.", alt.text="Adjust for color blindness."}
 op <- graphics::par(mfrow = c(5, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(34, blind = NULL))
-plot(inlmisc::GetTolColors(34, blind = "deutan"))
-plot(inlmisc::GetTolColors(34, blind = "protan"))
-plot(inlmisc::GetTolColors(34, blind = "tritan"))
-plot(inlmisc::GetTolColors(34, blind = "monochromacy"))
+plot(inlmisc::GetColors(34, blind = NULL))
+plot(inlmisc::GetColors(34, blind = "deutan"))
+plot(inlmisc::GetColors(34, blind = "protan"))
+plot(inlmisc::GetColors(34, blind = "tritan"))
+plot(inlmisc::GetColors(34, blind = "monochrome"))
 graphics::par(op)
 ```
 
@@ -301,21 +306,23 @@ to work after conversion to gray scale by specifying the `gray` argument as `TRU
 
 ```{r gray, fig.height=6, fig.show="hold", fig.cap="Prepare qualitative schemes for gray-scale conversion.", alt.text="Prepare qualitative schemes for gray-scale conversion."}
 op <- graphics::par(mfrow = c(6, 1), oma = c(0, 0, 0, 0))
-plot(inlmisc::GetTolColors(3, "bright",  gray = TRUE))
-plot(inlmisc::GetTolColors(3, "bright",  gray = TRUE, blind = "m"))
-plot(inlmisc::GetTolColors(4, "vibrant", gray = TRUE))
-plot(inlmisc::GetTolColors(4, "vibrant", gray = TRUE, blind = "m"))
-plot(inlmisc::GetTolColors(5, "muted",   gray = TRUE))
-plot(inlmisc::GetTolColors(5, "muted",   gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(3, "bright",  gray = TRUE))
+plot(inlmisc::GetColors(3, "bright",  gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(4, "vibrant", gray = TRUE))
+plot(inlmisc::GetColors(4, "vibrant", gray = TRUE, blind = "m"))
+plot(inlmisc::GetColors(5, "muted",   gray = TRUE))
+plot(inlmisc::GetColors(5, "muted",   gray = TRUE, blind = "m"))
 graphics::par(op)
 ```
 
-Note that the sequential scheme `"YlOrBr"` works well for conversion to gray scale.
+Note that the sequential schemes `"YlOrBr"` and `"iridescent"` work well for conversion to gray scale.
 
-```{r ylorbr, fig.height=2, fig.show="hold", fig.cap="Prepare YlOrBr scheme for gray-scale conversion.", alt.text="Prepare YlOrBr scheme for gray-scale conversion."}
-op <- graphics::par(mfrow = c(2, 1), oma = c(0, 0, 0, 0), cex = 0.7)
-plot(inlmisc::GetTolColors(256, "YlOrBr"))
-plot(inlmisc::GetTolColors(256, "YlOrBr", blind = "monochromacy"))
+```{r ylorbr, fig.height=4, fig.show="hold", fig.cap="Prepare YlOrBr scheme for gray-scale conversion.", alt.text="Prepare YlOrBr scheme for gray-scale conversion."}
+op <- graphics::par(mfrow = c(4, 1), oma = c(0, 0, 0, 0))
+plot(inlmisc::GetColors(256, "YlOrBr"))
+plot(inlmisc::GetColors(256, "YlOrBr",     blind = "monochromacy"))
+plot(inlmisc::GetColors(256, "iridescent"))
+plot(inlmisc::GetColors(256, "iridescent", blind = "monochromacy"))
 graphics::par(op)
 ```
 
@@ -326,8 +333,8 @@ UMD Global Land Cover Classification, 1 Kilometer, 1.0:
 Department of Geography, University of Maryland, College Park, Maryland, 1981-1994.
 
 Tol, Paul, 2018, Colour Schemes: SRON Technical Note,
-doc. no. SRON/EPS/TN/09-002, issue 3.0, 17 p.,
-accessed August 29, 2018 at <https://personal.sron.nl/~pault/data/colourschemes.pdf>.
+doc. no. SRON/EPS/TN/09-002, issue 3.1, 20 p.,
+accessed September 24, 2018 at <https://personal.sron.nl/~pault/data/colourschemes.pdf>.
 
 ## Reproducibility
 
