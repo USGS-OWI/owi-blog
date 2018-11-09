@@ -134,6 +134,7 @@ group_summary <- readRDS(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
+Timing in seconds:
 
 ```{r rds_no_timing, echo=FALSE, cache=TRUE}
 library(microbenchmark)
@@ -213,7 +214,7 @@ rds_compressed_df <- readRDS(file_name)
 
 ```
 
-The partial data files will be the same process as "RDS No Compression".
+The partial data files will be the same process as "RDS No Compression". Timing in seconds:
 
 ```{r rds_compress_output, echo=FALSE, cache=TRUE}
 file_name <- "test_compressed.rds"
@@ -285,6 +286,8 @@ group_summary_rdr <- read_csv(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 
 ```
+
+Timing in seconds:
 
 ```{r readr_no_output, echo=FALSE, cache=TRUE}
 library(readr)
@@ -391,7 +394,7 @@ fread_df <- fread(file_name,
 
 `fread` includes arguments "select"/"drop" to only load specific columns into memory. This improves the load time if there are many columns that aren't needed. If there's a known, continuous set of rows, you can use the arguments "skip" and "nrows" to pull just what you need. However, that is not flexible enough for most of our needs, so I am not including that in this evaluation.
 
-Also, I am keeping this analysis to a "data.frame" world. 
+Also, I am keeping this analysis as a "data.frame" (rather than "data.table") because it is the system our group has decided to stick with. 
 
 ```{r fread_partial, eval=FALSE}
 min_bytes <- 100000
@@ -510,6 +513,8 @@ group_summary_feather <- read_feather(file_name,
 
 ```
 
+Timing in seconds:
+
 ```{r feather_output, echo=FALSE, cache=TRUE}
 library(feather)
 file_name <- "test.feather"
@@ -586,6 +591,8 @@ group_summary_fst <- read_fst(file_name,
 
 ```
 
+Timing in seconds:
+
 ```{r fst_output, echo=FALSE, cache=TRUE}
 library(fst)
 file_name <- "test.fst"
@@ -636,7 +643,7 @@ write_fst(biggish, path = file_name, compress = 100)
 fst_df <- read_fst(file_name)
 ```
 
-The partial data files will be the same process as "fst No Compression".
+The partial data files will be the same process as "fst No Compression". Timing in seconds:
 
 ```{r fst_comp_output, echo=FALSE, cache=TRUE}
 file_name <- "test_compressed.fst"
@@ -716,9 +723,9 @@ partial_data_sqlite <- tbl(sqldb,"test") %>%
                                      tz = "America/New_York",
                                      origin = "1970-01-01"))
 
+# Group and summarize:
 filter_time <- as.numeric(as.POSIXct("2016-10-02 00:00:00", tz = "America/New_York"))
 
-# Group and summarize:
 group_summary_sqlite <- tbl(sqldb,"test") %>%
   select(bytes, requested_date, service, !!group_col) %>%
   filter(service == !!service, 
@@ -731,6 +738,8 @@ group_summary_sqlite <- tbl(sqldb,"test") %>%
 
 dbDisconnect(sqldb)
 ```
+
+Timing in seconds:
 
 ```{r sqlite_output, echo=FALSE, cache=TRUE}
 library(RSQLite)
@@ -788,6 +797,8 @@ read_write <- bind_rows(read_write, read_write_sqlite)
 knitr::kable(read_write_sqlite, digits = 1)
 ```
 
+It is important to note that this is the first "partial" and "grouping" solution that is completely done outside of R. So when you are getting data that pushes the limits (or passes the limits) of what you can load directly into R, this is the first basic solution.
+
 ## MonetDB
 
 ```{r monet, eval=FALSE}
@@ -842,6 +853,8 @@ group_summary_monet <- tbl(con,"test") %>%
 
 dbDisconnect(con, shutdown=TRUE)
 ```
+
+Timing in seconds:
 
 ```{r monet_output, echo=FALSE, cache=TRUE}
 library(MonetDBLite)
@@ -898,6 +911,8 @@ read_write <- bind_rows(read_write, read_write_monet)
 knitr::kable(read_write_monet, digits = 1)
 
 ```
+
+Again, it is important to note that the "partial" and "grouping" solutions are completely done outside of R. So when you are getting data that pushes the limits (or passes the limits) of what you can load directly into R, this is another good solution. 
 
 
 # Comparison
@@ -959,9 +974,11 @@ read_write_table <- read_write %>%
 read_write_table
 ```
 
-Not that `sqlite` and `MonetDB` are the only formats here that allow careful filtering and calculate summaries without loading the whole data set. So if our "pretty big data" gets "really big", those will formats will rise to the top. 
+Not that `sqlite` and `MonetDB` are the only formats here that allow careful filtering and calculate summaries without loading the whole data set. So if our "pretty big data" gets "really big", those will formats will rise to the top.
+
 
 If you can read in all the rows without crashing R, `fread`, `feather`, and `fst` are fast!
+
 
 Another consideration, who are your collaborators? If everyone's using R exclusively, this table on it's own is a fine way to judge what format to pick. If your collaborators are half R, half Python...you might favor `feather` since that format works well in both systems. 
 

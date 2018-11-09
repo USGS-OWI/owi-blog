@@ -214,6 +214,8 @@ group_summary <- readRDS(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
+Timing in seconds:
+
 | format |  read|  write|  partial|  grouping|
 |:-------|-----:|------:|--------:|---------:|
 | rds    |  29.7|   28.5|     31.5|      31.1|
@@ -230,6 +232,7 @@ rds_compressed_df <- readRDS(file_name)
 ```
 
 The partial data files will be the same process as “RDS No Compression”.
+Timing in seconds:
 
 | format          |  read|  write|  partial|  grouping|
 |:----------------|-----:|------:|--------:|---------:|
@@ -278,6 +281,8 @@ group_summary_rdr <- read_csv(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
+Timing in seconds:
+
 | format |  read|  write|  partial|  grouping|
 |:-------|-----:|------:|--------:|---------:|
 | readr  |  19.2|   66.4|     21.6|      19.7|
@@ -324,7 +329,9 @@ the arguments “skip” and “nrows” to pull just what you need. However,
 that is not flexible enough for most of our needs, so I am not including
 that in this evaluation.
 
-Also, I am keeping this analysis to a “data.frame” world.
+Also, I am keeping this analysis as a “data.frame” (rather than
+“data.table”) because it is the system our group has decided to stick
+with.
 
 ``` r
 min_bytes <- 100000
@@ -421,6 +428,8 @@ group_summary_feather <- read_feather(file_name,
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
+Timing in seconds:
+
 | format  |  read|  write|  partial|  grouping|
 |:--------|-----:|------:|--------:|---------:|
 | feather |   5.6|      4|      1.7|       0.4|
@@ -467,6 +476,8 @@ group_summary_fst <- read_fst(file_name,
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
+Timing in seconds:
+
 | format |  read|  write|  partial|  grouping|
 |:-------|-----:|------:|--------:|---------:|
 | fst    |   4.2|    6.5|      1.7|       0.3|
@@ -485,6 +496,7 @@ fst_df <- read_fst(file_name)
 ```
 
 The partial data files will be the same process as “fst No Compression”.
+Timing in seconds:
 
 | format          |  read|  write|  partial|  grouping|
 |:----------------|-----:|------:|--------:|---------:|
@@ -533,9 +545,9 @@ partial_data_sqlite <- tbl(sqldb,"test") %>%
                                      tz = "America/New_York",
                                      origin = "1970-01-01"))
 
+# Group and summarize:
 filter_time <- as.numeric(as.POSIXct("2016-10-02 00:00:00", tz = "America/New_York"))
 
-# Group and summarize:
 group_summary_sqlite <- tbl(sqldb,"test") %>%
   select(bytes, requested_date, service, !!group_col) %>%
   filter(service == !!service, 
@@ -549,9 +561,16 @@ group_summary_sqlite <- tbl(sqldb,"test") %>%
 dbDisconnect(sqldb)
 ```
 
+Timing in seconds:
+
 | format |  read|  write|  partial|  grouping|
 |:-------|-----:|------:|--------:|---------:|
 | sqlite |  27.5|   34.8|      1.5|       1.6|
+
+It is important to note that this is the first “partial” and “grouping”
+solution that is completely done outside of R. So when you are getting
+data that pushes the limits (or passes the limits) of what you can load
+directly into R, this is the first basic solution.
 
 MonetDB
 -------
@@ -608,9 +627,16 @@ group_summary_monet <- tbl(con,"test") %>%
 dbDisconnect(con, shutdown=TRUE)
 ```
 
+Timing in seconds:
+
 | format  |  read|  write|  partial|  grouping|
 |:--------|-----:|------:|--------:|---------:|
 | MonetDB |     3|   30.2|      1.6|       1.3|
+
+Again, it is important to note that the “partial” and “grouping”
+solutions are completely done outside of R. So when you are getting data
+that pushes the limits (or passes the limits) of what you can load
+directly into R, this is another good solution.
 
 Comparison
 ==========
