@@ -128,7 +128,6 @@ read_group_summary <- readRDS(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
-Timing in seconds:
 
 ```{r rds_no_timing, echo=FALSE, cache=TRUE}
 library(microbenchmark)
@@ -209,6 +208,8 @@ knitr::kable(read_write, digits = 1,
   
 ```
 
+Timing in seconds.
+
 ## RDS Compression
 
 ```{r rds_compress, eval=FALSE}
@@ -220,7 +221,7 @@ rds_compressed_df <- readRDS(file_name)
 
 ```
 
-The "Read and Filter" data files will be the same process as "RDS No Compression". Timing in seconds:
+The "Read and Filter" data files will be the same process as "RDS No Compression". 
 
 ```{r rds_compress_output, echo=FALSE, cache=TRUE}
 file_name <- "test_compressed.rds"
@@ -257,6 +258,8 @@ knitr::kable(read_write_rds_comp, digits = 1,
              col.names = table_col_names) %>%
   kable_styling(c("striped", "bordered")) 
 ```
+
+Timing in seconds.
 
 ## readr No Compression
 
@@ -297,7 +300,6 @@ read_group_summary_readr <- read_csv(file_name) %>%
 
 ```
 
-Timing in seconds:
 
 ```{r readr_no_output, echo=FALSE, cache=TRUE}
 library(readr)
@@ -341,6 +343,7 @@ knitr::kable(read_write_readr, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 ## readr Compression
 
@@ -397,6 +400,7 @@ knitr::kable(read_write_readr_comp, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 
 ## fread No Compression
@@ -498,6 +502,7 @@ knitr::kable(read_write_fread, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 Note! I didn't explore adjusting the `nThread` argument in `fread`/`fwrite`. I also didn't include a compressed version of `fread`/`fwrite`. Our crew is a hodge-podge of Windows, Mac, and Linux, and we try to make our code work on any OS. Many of the solutions for combining compression with `data.table` functions looked fragile on the different OSes. The `data.table` package has an open GitHub issue to support compression in the future. It may be worth updating this script once that is added.
 
@@ -540,7 +545,6 @@ read_group_summarize_feather <- read_feather(file_name,
 
 ```
 
-Timing in seconds:
 
 ```{r feather_output, echo=FALSE, cache=TRUE}
 library(feather)
@@ -583,6 +587,7 @@ knitr::kable(read_write_feather, digits = 1,
   kable_styling(c("striped", "bordered"))
 ```
 
+Timing in seconds.
 
 For the same reason as `fread`, I didn't try compressing the `feather` format. Both `data.table` and `feather` have open GitHub issues to support compression in the future. It may be worth updating this script once those features are added. 
 
@@ -624,7 +629,6 @@ read_group_summarize_fst <- read_fst(file_name,
 
 ```
 
-Timing in seconds:
 
 ```{r fst_output, echo=FALSE, cache=TRUE}
 library(fst)
@@ -667,6 +671,8 @@ knitr::kable(read_write_fst, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
+
 ## fst Compression
 
 ```{r fst_comp, eval=FALSE}
@@ -679,7 +685,7 @@ write_fst(biggish, path = file_name, compress = 100)
 fst_df <- read_fst(file_name)
 ```
 
-The "Read and Filter" and "Read and Group and Summarize" retrievals will be the same process as in "fst No Compression". Timing in seconds:
+The "Read and Filter" and "Read and Group and Summarize" retrievals will be the same process as in "fst No Compression". 
 
 ```{r fst_comp_output, echo=FALSE, cache=TRUE}
 file_name <- "test_compressed.fst"
@@ -721,6 +727,7 @@ knitr::kable(read_write_fst_comp, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 ## SQLite
 
@@ -780,7 +787,6 @@ read_group_summarize_sqlite <- tbl(sqldb,"test") %>%
 dbDisconnect(sqldb)
 ```
 
-Timing in seconds:
 
 ```{r sqlite_output, echo=FALSE, cache=TRUE}
 library(RSQLite)
@@ -843,6 +849,7 @@ knitr::kable(read_write_sqlite, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 It is important to note that this is the first "Read and Filter" and "Read and Group and Summarize" solution that is completely done outside of R. So when you are getting data that pushes the limits (or passes the limits) of what you can load directly into R, this is the first basic solution.
 
@@ -902,7 +909,6 @@ read_group_summarize_monet <- tbl(con,"test") %>%
 dbDisconnect(con, shutdown=TRUE)
 ```
 
-Timing in seconds:
 
 ```{r monet_output, echo=FALSE, cache=TRUE}
 library(MonetDBLite)
@@ -964,6 +970,7 @@ knitr::kable(read_write_monet, digits = 1,
   kable_styling(c("striped", "bordered")) 
 ```
 
+Timing in seconds.
 
 Again, it is important to note that the "Read and Filter" and "Read and Group and Summarize" solutions are completely done outside of R. So when you are getting data that pushes the limits (or passes the limits) of what you can load directly into R, this is another good solution. There also appears to be a lot more flexibility in using date/times directly in MonetDB compared to SQLite.
 
@@ -1033,6 +1040,7 @@ read_write_table <- read_write %>%
 read_write_table
 ```
 
+All timing in seconds.
 
 Note that `sqlite` and `MonetDB` are the only formats here that allow careful filtering and calculate summaries without loading the whole data set. So if our "pretty big data" gets "really big", those will formats will rise to the top. If you can read in all the rows without crashing R, `fread`, `feather`, and `fst` are fast!
 

@@ -213,8 +213,6 @@ read_group_summary <- readRDS(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -255,6 +253,8 @@ rds
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 RDS Compression
 ---------------
 
@@ -267,7 +267,7 @@ rds_compressed_df <- readRDS(file_name)
 ```
 
 The “Read and Filter” data files will be the same process as “RDS No
-Compression”. Timing in seconds:
+Compression”.
 
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -309,6 +309,8 @@ rds compression
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 readr No Compression
 --------------------
 
@@ -352,8 +354,6 @@ read_group_summary_readr <- read_csv(file_name) %>%
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -394,6 +394,8 @@ readr
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 readr Compression
 -----------------
 
@@ -449,6 +451,8 @@ readr compression
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 fread No Compression
 --------------------
 
@@ -544,6 +548,8 @@ fread
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 Note! I didn’t explore adjusting the `nThread` argument in
 `fread`/`fwrite`. I also didn’t include a compressed version of
 `fread`/`fwrite`. Our crew is a hodge-podge of Windows, Mac, and Linux,
@@ -593,8 +599,6 @@ read_group_summarize_feather <- read_feather(file_name,
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -635,6 +639,8 @@ feather
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 For the same reason as `fread`, I didn’t try compressing the `feather`
 format. Both `data.table` and `feather` have open GitHub issues to
 support compression in the future. It may be worth updating this script
@@ -677,8 +683,6 @@ read_group_summarize_fst <- read_fst(file_name,
   summarize(MB = sum(as.numeric(bytes), na.rm = TRUE)/10^6)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -719,6 +723,8 @@ fst
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 fst Compression
 ---------------
 
@@ -733,7 +739,7 @@ fst_df <- read_fst(file_name)
 ```
 
 The “Read and Filter” and “Read and Group and Summarize” retrievals will
-be the same process as in “fst No Compression”. Timing in seconds:
+be the same process as in “fst No Compression”.
 
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -775,6 +781,8 @@ fst compression
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 SQLite
 ------
 
@@ -834,8 +842,6 @@ read_group_summarize_sqlite <- tbl(sqldb,"test") %>%
 dbDisconnect(sqldb)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -876,6 +882,8 @@ sqlite
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 It is important to note that this is the first “Read and Filter” and
 “Read and Group and Summarize” solution that is completely done outside
 of R. So when you are getting data that pushes the limits (or passes the
@@ -937,8 +945,6 @@ read_group_summarize_monet <- tbl(con,"test") %>%
 dbDisconnect(con, shutdown=TRUE)
 ```
 
-Timing in seconds:
-
 <table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -979,6 +985,8 @@ MonetDB
 </tr>
 </tbody>
 </table>
+Timing in seconds.
+
 Again, it is important to note that the “Read and Filter” and “Read and
 Group and Summarize” solutions are completely done outside of R. So when
 you are getting data that pushes the limits (or passes the limits) of
@@ -1235,6 +1243,8 @@ MonetDB
 </tr>
 </tbody>
 </table>
+All timing in seconds.
+
 Note that `sqlite` and `MonetDB` are the only formats here that allow
 careful filtering and calculate summaries without loading the whole data
 set. So if our “pretty big data” gets “really big”, those will formats
