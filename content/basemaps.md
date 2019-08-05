@@ -71,23 +71,24 @@ att <- paste0("<a href='https://www.usgs.gov/'>",
               "Policies</a>")
 ```
 
-Leaflet supports base maps using [map tiles](https://www.mapbox.com/help/how-web-maps-work/).
-TNM base maps are available as Web Map Service ([WMS](https://en.wikipedia.org/wiki/Web_Map_Service)) tiles.
+Leaflet supports base maps using [map tiles](https://en.wikipedia.org/wiki/Tiled_web_map).
+TNM base map services are available through the Leaflet application programming interface.
 Add tiled layers (base maps) that describe topographic information in TNM to the map widget:
 
 
 ```r
 GetURL <- function(service, host = "basemap.nationalmap.gov") {
-  sprintf("https://%s/arcgis/services/%s/MapServer/WmsServer", host, service)
+  sprintf("https://%s/ArcGIS/rest/services/%s/MapServer/tile/{z}/{y}/{x}",
+          host, service)
 }
-map <- leaflet::addWMSTiles(map, GetURL("USGSTopo"),
-                            group = grp[1], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSImageryOnly"),
-                            group = grp[2], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSImageryTopo"),
-                            group = grp[3], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSShadedReliefOnly"),
-                            group = grp[4], attribution = att, layers = "0")
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSTopo"),
+                         group = grp[1], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryOnly"),
+                         group = grp[2], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryTopo"),
+                         group = grp[3], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSShadedReliefOnly"),
+                         group = grp[4], attribution = att)
 ```
 
 The content of these layers is described in the
@@ -98,15 +99,14 @@ Add the tiled overlay for the [National Hydrography Dataset](https://nhd.usgs.go
 
 
 ```r
-opt <- leaflet::WMSTileOptions(format = "image/png", transparent = TRUE)
-map <- leaflet::addWMSTiles(map, GetURL("USGSHydroCached"),
-                            group = grp[5], options = opt, layers = "0")
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSHydroCached"),
+                         group = grp[5], attribution = att)
 map <- leaflet::hideGroup(map, grp[5])
 ```
 
 Point locations, that appear on the map as icons, may be added to a base map using a marker overlay.
 In this example, site locations are included for selected wells in the
-[USGS Idaho National Laboratory](https://id.water.usgs.gov/INL/)
+[USGS Idaho National Laboratory](https://www.usgs.gov/centers/id-water/science/idaho-national-laboratory-project-office)
 water-quality observation network.
 Create the marker-overlay dataset using the following commands (requires web access):
 
@@ -185,7 +185,7 @@ And let's not forget the R session information.
 ```
 ## - Session info ----------------------------------------------------------
 ##  setting  value                       
-##  version  R version 3.5.1 (2018-07-02)
+##  version  R version 3.6.1 (2019-07-05)
 ##  os       Windows 10 x64              
 ##  system   x86_64, mingw32             
 ##  ui       Rgui                        
@@ -193,74 +193,67 @@ And let's not forget the R session information.
 ##  collate  English_United States.1252  
 ##  ctype    English_United States.1252  
 ##  tz       America/Los_Angeles         
-##  date     2018-11-08                  
+##  date     2019-08-05                  
 ## 
 ## - Packages --------------------------------------------------------------
 ##  package       * version date       lib source        
-##  assertthat      0.2.0   2017-04-11 [1] CRAN (R 3.5.1)
-##  backports       1.1.2   2017-12-13 [1] CRAN (R 3.5.0)
-##  base64enc       0.1-3   2015-07-28 [1] CRAN (R 3.5.0)
-##  bindr           0.1.1   2018-03-13 [1] CRAN (R 3.5.1)
-##  bindrcpp        0.2.2   2018-03-29 [1] CRAN (R 3.5.1)
-##  callr           3.0.0   2018-08-24 [1] CRAN (R 3.5.1)
-##  cli             1.0.1   2018-09-25 [1] CRAN (R 3.5.1)
-##  crayon          1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
-##  crosstalk       1.0.0   2016-12-21 [1] CRAN (R 3.5.1)
-##  curl            3.2     2018-03-28 [1] CRAN (R 3.5.1)
-##  dataRetrieval   2.7.4   2018-05-09 [1] local         
-##  debugme         1.1.0   2017-10-22 [1] CRAN (R 3.5.1)
-##  desc            1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
-##  devtools        2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
-##  digest          0.6.18  2018-10-10 [1] CRAN (R 3.5.1)
-##  dplyr           0.7.7   2018-10-16 [1] CRAN (R 3.5.1)
-##  evaluate        0.12    2018-10-09 [1] CRAN (R 3.5.1)
-##  fs              1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
-##  glue            1.3.0   2018-07-17 [1] CRAN (R 3.5.1)
-##  hms             0.4.2   2018-03-10 [1] CRAN (R 3.5.1)
-##  htmltools       0.3.6   2017-04-28 [1] CRAN (R 3.5.1)
-##  htmlwidgets     1.3     2018-09-30 [1] CRAN (R 3.5.1)
-##  httpuv          1.4.5   2018-07-19 [1] CRAN (R 3.5.1)
-##  httr            1.3.1   2017-08-20 [1] CRAN (R 3.5.1)
-##  jsonlite        1.5     2017-06-01 [1] CRAN (R 3.5.1)
-##  knitr           1.20    2018-02-20 [1] CRAN (R 3.5.1)
-##  later           0.7.5   2018-09-18 [1] CRAN (R 3.5.1)
-##  lattice         0.20-38 2018-11-04 [1] CRAN (R 3.5.1)
-##  leaflet         2.0.2   2018-08-27 [1] CRAN (R 3.5.1)
-##  lubridate       1.7.4   2018-04-11 [1] CRAN (R 3.5.1)
-##  magrittr        1.5     2014-11-22 [1] CRAN (R 3.5.1)
-##  memoise         1.1.0   2017-04-21 [1] CRAN (R 3.5.1)
-##  mime            0.6     2018-10-05 [1] CRAN (R 3.5.1)
-##  pillar          1.3.0   2018-07-14 [1] CRAN (R 3.5.1)
-##  pkgbuild        1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
-##  pkgconfig       2.0.2   2018-08-16 [1] CRAN (R 3.5.1)
-##  pkgload         1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
-##  plyr            1.8.4   2016-06-08 [1] CRAN (R 3.5.1)
-##  prettyunits     1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
-##  processx        3.2.0   2018-08-16 [1] CRAN (R 3.5.1)
-##  promises        1.0.1   2018-04-13 [1] CRAN (R 3.5.1)
-##  ps              1.2.1   2018-11-06 [1] CRAN (R 3.5.1)
-##  purrr           0.2.5   2018-05-29 [1] CRAN (R 3.5.1)
-##  R6              2.3.0   2018-10-04 [1] CRAN (R 3.5.1)
-##  Rcpp            1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
-##  readr           1.1.1   2017-05-16 [1] CRAN (R 3.5.1)
-##  remotes         2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
-##  reshape2        1.4.3   2017-12-11 [1] CRAN (R 3.5.1)
-##  rgdal           1.3-6   2018-10-16 [1] CRAN (R 3.5.1)
-##  rlang           0.3.0.1 2018-10-25 [1] CRAN (R 3.5.1)
-##  rprojroot       1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
-##  sessioninfo     1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
-##  shiny           1.2.0   2018-11-02 [1] CRAN (R 3.5.1)
-##  sp              1.3-1   2018-06-05 [1] CRAN (R 3.5.1)
-##  stringi         1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
-##  stringr         1.3.1   2018-05-10 [1] CRAN (R 3.5.1)
-##  testthat        2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
-##  tibble          1.4.2   2018-01-22 [1] CRAN (R 3.5.1)
-##  tidyselect      0.2.5   2018-10-11 [1] CRAN (R 3.5.1)
-##  usethis         1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
-##  withr           2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
-##  xml2            1.2.0   2018-01-24 [1] CRAN (R 3.5.1)
-##  xtable          1.8-3   2018-08-29 [1] CRAN (R 3.5.1)
-##  yaml            2.2.0   2018-07-25 [1] CRAN (R 3.5.1)
+##  assertthat      0.2.1   2019-03-21 [1] CRAN (R 3.6.1)
+##  backports       1.1.4   2019-04-10 [1] CRAN (R 3.6.0)
+##  callr           3.3.1   2019-07-18 [1] CRAN (R 3.6.1)
+##  cli             1.1.0   2019-03-19 [1] CRAN (R 3.6.1)
+##  crayon          1.3.4   2017-09-16 [1] CRAN (R 3.6.1)
+##  crosstalk       1.0.0   2016-12-21 [1] CRAN (R 3.6.1)
+##  curl            4.0     2019-07-22 [1] CRAN (R 3.6.1)
+##  dataRetrieval   2.7.5   2019-06-05 [1] CRAN (R 3.6.1)
+##  desc            1.2.0   2018-05-01 [1] CRAN (R 3.6.1)
+##  devtools        2.1.0   2019-07-06 [1] CRAN (R 3.6.1)
+##  digest          0.6.20  2019-07-04 [1] CRAN (R 3.6.1)
+##  evaluate        0.14    2019-05-28 [1] CRAN (R 3.6.1)
+##  fs              1.3.1   2019-05-06 [1] CRAN (R 3.6.1)
+##  glue            1.3.1   2019-03-12 [1] CRAN (R 3.6.1)
+##  hms             0.5.0   2019-07-09 [1] CRAN (R 3.6.1)
+##  htmltools       0.3.6   2017-04-28 [1] CRAN (R 3.6.1)
+##  htmlwidgets     1.3     2018-09-30 [1] CRAN (R 3.6.1)
+##  httpuv          1.5.1   2019-04-05 [1] CRAN (R 3.6.1)
+##  httr            1.4.1   2019-08-05 [1] CRAN (R 3.6.1)
+##  jsonlite        1.6     2018-12-07 [1] CRAN (R 3.6.1)
+##  knitr           1.23    2019-05-18 [1] CRAN (R 3.6.1)
+##  later           0.8.0   2019-02-11 [1] CRAN (R 3.6.1)
+##  lattice         0.20-38 2018-11-04 [1] CRAN (R 3.6.1)
+##  leaflet         2.0.2   2018-08-27 [1] CRAN (R 3.6.1)
+##  magrittr        1.5     2014-11-22 [1] CRAN (R 3.6.1)
+##  memoise         1.1.0   2017-04-21 [1] CRAN (R 3.6.1)
+##  mime            0.7     2019-06-11 [1] CRAN (R 3.6.0)
+##  pillar          1.4.2   2019-06-29 [1] CRAN (R 3.6.1)
+##  pkgbuild        1.0.3   2019-03-20 [1] CRAN (R 3.6.1)
+##  pkgconfig       2.0.2   2018-08-16 [1] CRAN (R 3.6.1)
+##  pkgload         1.0.2   2018-10-29 [1] CRAN (R 3.6.1)
+##  prettyunits     1.0.2   2015-07-13 [1] CRAN (R 3.6.1)
+##  processx        3.4.1   2019-07-18 [1] CRAN (R 3.6.1)
+##  promises        1.0.1   2018-04-13 [1] CRAN (R 3.6.1)
+##  ps              1.3.0   2018-12-21 [1] CRAN (R 3.6.1)
+##  R6              2.4.0   2019-02-14 [1] CRAN (R 3.6.1)
+##  Rcpp            1.0.2   2019-07-25 [1] CRAN (R 3.6.1)
+##  readr           1.3.1   2018-12-21 [1] CRAN (R 3.6.1)
+##  remotes         2.1.0   2019-06-24 [1] CRAN (R 3.6.1)
+##  rgdal           1.4-4   2019-05-29 [1] CRAN (R 3.6.1)
+##  rlang           0.4.0   2019-06-25 [1] CRAN (R 3.6.1)
+##  rprojroot       1.3-2   2018-01-03 [1] CRAN (R 3.6.1)
+##  sessioninfo     1.1.1   2018-11-05 [1] CRAN (R 3.6.1)
+##  shiny           1.3.2   2019-04-22 [1] CRAN (R 3.6.1)
+##  sp              1.3-1   2018-06-05 [1] CRAN (R 3.6.1)
+##  stringi         1.4.3   2019-03-12 [1] CRAN (R 3.6.0)
+##  stringr         1.4.0   2019-02-10 [1] CRAN (R 3.6.1)
+##  testthat        2.2.1   2019-07-25 [1] CRAN (R 3.6.1)
+##  tibble          2.1.3   2019-06-06 [1] CRAN (R 3.6.1)
+##  usethis         1.5.1   2019-07-04 [1] CRAN (R 3.6.1)
+##  vctrs           0.2.0   2019-07-05 [1] CRAN (R 3.6.1)
+##  withr           2.1.2   2018-03-15 [1] CRAN (R 3.6.1)
+##  xfun            0.8     2019-06-25 [1] CRAN (R 3.6.1)
+##  xml2            1.2.1   2019-07-29 [1] CRAN (R 3.6.1)
+##  xtable          1.8-4   2019-04-21 [1] CRAN (R 3.6.1)
+##  yaml            2.2.0   2018-07-25 [1] CRAN (R 3.6.0)
+##  zeallot         0.1.0   2018-01-28 [1] CRAN (R 3.6.1)
 ## 
-## [1] C:/Users/jfisher/Tools/R/R-3.5.1/library
+## [1] C:/Users/jfisher/Tools/R/R-3.6.1/library
 ```
