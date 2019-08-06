@@ -1,6 +1,6 @@
 ---
 author: David Blodgett
-date: 2019-08-05
+date: 2017-05-01
 slug: nldi-intro
 title: The Hydro Network-Linked Data Index
 type: post
@@ -439,23 +439,23 @@ wqp_site <- list(names = as.character(nldi_data$DMwqp$name),
 print(paste(wqp_site$names[1:10], "has id", wqp_site$ids[1:10]))
 ```
 
-    ##  [1] "V-4 (MX) has id USGS-292602101052800"                                         
-    ##  [2] "RIO GRANDE AT FORT QUITMAN, TX has id USGS-08370500"                          
-    ##  [3] "KEYSTONE RESERVIOR INLET, EL PASO, TX has id USGS-314818106323910"            
-    ##  [4] "MBOWN-186 - 28S.02E.24.444 (ST-29) has id USGS-315101106410701"               
-    ##  [5] "28S.03E.21.441 has id USGS-315112106380101"                                   
-    ##  [6] "NEMEXAS DRAIN AT GOMEZ ROAD NEAR CANUTILLO, TX has id USGS-315152106364410"   
-    ##  [7] "27S.03E.20.432B has id USGS-315622106391703"                                  
-    ##  [8] "TEMP WELL-A INFLOW AT VINTON BRIDGE NR VINTON, TX has id USGS-315732106361610"
-    ##  [9] "MBOWN-164 - 27S.03E.17.1414 has id USGS-315737106392501"                      
-    ## [10] "MBOWN-152 - 27S.03E.03.211A (ISC-1A/ISC-1M) has id USGS-315940106372301"
+    ##  [1] "RIO GRANDE AT FORT QUITMAN, TX has id USGS-08370500"                          
+    ##  [2] "KEYSTONE RESERVIOR INLET, EL PASO, TX has id USGS-314818106323910"            
+    ##  [3] "MBOWN-186 - 28S.02E.24.444 (ST-29) has id USGS-315101106410701"               
+    ##  [4] "28S.03E.21.441 has id USGS-315112106380101"                                   
+    ##  [5] "NEMEXAS DRAIN AT GOMEZ ROAD NEAR CANUTILLO, TX has id USGS-315152106364410"   
+    ##  [6] "27S.03E.20.432B has id USGS-315622106391703"                                  
+    ##  [7] "TEMP WELL-A INFLOW AT VINTON BRIDGE NR VINTON, TX has id USGS-315732106361610"
+    ##  [8] "MBOWN-164 - 27S.03E.17.1414 has id USGS-315737106392501"                      
+    ##  [9] "MBOWN-152 - 27S.03E.03.211A (ISC-1A/ISC-1M) has id USGS-315940106372301"      
+    ## [10] "26S.03E.29.220 has id USGS-320125106390301"
 
 ``` r
 wqp_data <- dataRetrieval::readWQPqw(siteNumbers = wqp_site$ids[1:10], parameterCd = "")
 print(paste0("Got ", ncol(wqp_data), " samples beween ", min(wqp_data$ActivityStartDate), " and ", max(wqp_data$ActivityStartDate), " for characteristics: ", paste(unique(wqp_data$CharacteristicName), collapse = ", ")))
 ```
 
-    ## [1] "Got 65 samples beween 1971-03-01 and 2016-09-18 for characteristics: Silica, Sulfate, Magnesium, Specific conductance, Calcium, Hydrogen ion, Temperature, water, pH, Sodium, Potassium, Sodium adsorption ratio [(Na)/(sq root of 1/2 Ca + Mg)], Sodium, percent total cations, Carbon dioxide, Chloride, Total dissolved solids, Hardness, Ca, Mg, Alkalinity, total, Fluoride, Hardness, non-carbonate, Inorganic nitrogen (nitrate and nitrite), Manganese, Mercury, Cadmium, Suspended Sediment Discharge, Strontium, Suspended sediment concentration (SSC), Barium, Lithium, Lead, Suspended Sediment Concentration (SSC), Carbonate, Zinc, Iron, Oxygen, Bicarbonate, Selenium, Cobalt, Chromium, Stream flow, mean. daily, Turbidity, Endrin, Ethion, Heptachlor epoxide, Copper, Nitrate, Arsenic, Dieldrin, Fecal Streptococcus Group Bacteria, Total Coliform, Chlorophyll a, Chlorophyll b, Kjeldahl nitrogen, Ammonia and ammonium, Carbophenothion, Diazinon, Biomass, periphyton, Phytoplankton, Nitrite, Organic Nitrogen, Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3), Lindane, Malathion, Methyl parathion, Chlordane, technical, Nickel, Phosphorus, Carbophenothion-methyl, p,p'-DDD, p,p'-DDE, p,p'-DDT, Methoxychlor, Aldrin, Biochemical oxygen demand, standard conditions, Fecal Coliform, Aluminum, Heptachlor, Parathion, Toxaphene, Organic carbon, Boron, Carbon-14, Carbon, isotope of mass 13, Gross-Uranium, Uranium-235, Uranium-234, Nitrogen, Argon, Methane, Silvex, Simazine, 2,4,5-T, 2,4-D, Atrazine, Orthophosphate, Silver, Vanadium, Stream flow, instantaneous, Molybdenum, Hydrogen sulfide, Depth to water level below land surface, Depth, from ground surface to well water level, Tritium, Temperature, air, deg C, Polychlorinated biphenyls, Beryllium, Barometric pressure, Krypton, Xenon, Phosphate-phosphorus, Gage height, Depth, Height, gage, Sodium plus potassium, Oxygen-18, Potassium-40, Flow rate, instantaneous, Antimony, Bromide, Thallium, Dichloroprop, Deuterium, Strontium-87/Strontium-86, ratio, Sulfur-34/Sulfur-32 ratio, Helium, Neon, .alpha.-Endosulfan, Mirex, Ethylan, Chlorinated naphthalenes, RBP High water mark, RBP Stream width, Floating algae mat - severity (choice list), Floating debris - severity (choice list), Floating Garbage Severity (choice List), Detergent, severity (choice list), Odor, atmospheric, Turbidity severity (choice list), Fish Kill, Severity (choice list), Oil and Grease, Total solids"
+    ## [1] "Got 65 samples beween 1971-03-01 and 2016-09-18 for characteristics: Manganese, Mercury, Cadmium, Suspended Sediment Discharge, Strontium, Hardness, non-carbonate, Suspended sediment concentration (SSC), Sodium adsorption ratio [(Na)/(sq root of 1/2 Ca + Mg)], Sodium, percent total cations, Barium, Lithium, Lead, Suspended Sediment Concentration (SSC), Hardness, Ca, Mg, Carbonate, Fluoride, Zinc, Potassium, Iron, Oxygen, Chloride, Carbon dioxide, Bicarbonate, Total dissolved solids, Selenium, Cobalt, Temperature, water, Chromium, Stream flow, mean. daily, Turbidity, Magnesium, Alkalinity, total, Ethion, Heptachlor epoxide, Silica, Sulfate, Inorganic nitrogen (nitrate and nitrite), pH, Specific conductance, Heptachlor, Sodium, Copper, Calcium, Nitrate, Arsenic, Endrin, Fecal Streptococcus Group Bacteria, Total Coliform, Chlorophyll a, Chlorophyll b, Kjeldahl nitrogen, Ammonia and ammonium, Chlordane, technical, Dieldrin, Biomass, periphyton, Phytoplankton, Nitrite, Organic Nitrogen, Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3), Malathion, Methyl parathion, Carbophenothion-methyl, Diazinon, Nickel, Phosphorus, Hydrogen ion, p,p'-DDD, p,p'-DDE, p,p'-DDT, Methoxychlor, Parathion, Carbophenothion, Biochemical oxygen demand, standard conditions, Fecal Coliform, Aluminum, Lindane, Toxaphene, Aldrin, Organic carbon, Boron, Carbon-14, Carbon, isotope of mass 13, Gross-Uranium, Uranium-235, Uranium-234, Nitrogen, Argon, Methane, Silvex, Simazine, 2,4,5-T, 2,4-D, Atrazine, Orthophosphate, Silver, Vanadium, Stream flow, instantaneous, Molybdenum, Hydrogen sulfide, Depth to water level below land surface, Depth, from ground surface to well water level, Tritium, Temperature, air, deg C, Polychlorinated biphenyls, Beryllium, Barometric pressure, Krypton, Xenon, Phosphate-phosphorus, Gage height, Depth, Height, gage, Sodium plus potassium, Oxygen-18, Potassium-40, Flow rate, instantaneous, Antimony, Bromide, Thallium, Dichloroprop, Deuterium, Strontium-87/Strontium-86, ratio, Sulfur-34/Sulfur-32 ratio, Helium, Neon, .alpha.-Endosulfan, Mirex, Ethylan, Chlorinated naphthalenes, RBP High water mark, RBP Stream width, Floating algae mat - severity (choice list), Floating debris - severity (choice list), Floating Garbage Severity (choice List), Detergent, severity (choice list), Odor, atmospheric, Turbidity severity (choice list), Fish Kill, Severity (choice list), Oil and Grease, Total solids"
 
 Summary
 -------
