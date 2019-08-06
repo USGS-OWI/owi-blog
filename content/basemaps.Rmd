@@ -67,22 +67,23 @@ att <- paste0("<a href='https://www.usgs.gov/'>",
               "Policies</a>")
 ```
 
-Leaflet supports base maps using [map tiles](https://www.mapbox.com/help/how-web-maps-work/).
-TNM base maps are available as Web Map Service ([WMS](https://en.wikipedia.org/wiki/Web_Map_Service)) tiles.
+Leaflet supports base maps using [map tiles](https://en.wikipedia.org/wiki/Tiled_web_map).
+TNM base map services are available through the Leaflet application programming interface.
 Add tiled layers (base maps) that describe topographic information in TNM to the map widget:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 GetURL <- function(service, host = "basemap.nationalmap.gov") {
-  sprintf("https://%s/arcgis/services/%s/MapServer/WmsServer", host, service)
+  sprintf("https://%s/ArcGIS/rest/services/%s/MapServer/tile/{z}/{y}/{x}",
+          host, service)
 }
-map <- leaflet::addWMSTiles(map, GetURL("USGSTopo"),
-                            group = grp[1], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSImageryOnly"),
-                            group = grp[2], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSImageryTopo"),
-                            group = grp[3], attribution = att, layers = "0")
-map <- leaflet::addWMSTiles(map, GetURL("USGSShadedReliefOnly"),
-                            group = grp[4], attribution = att, layers = "0")
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSTopo"),
+                         group = grp[1], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryOnly"),
+                         group = grp[2], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryTopo"),
+                         group = grp[3], attribution = att)
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSShadedReliefOnly"),
+                         group = grp[4], attribution = att)
 ```
 
 The content of these layers is described in the
@@ -92,15 +93,14 @@ An overlay map layer adds information, such as river and lake features, to a bas
 Add the tiled overlay for the [National Hydrography Dataset](https://nhd.usgs.gov/) to the map widget:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-opt <- leaflet::WMSTileOptions(format = "image/png", transparent = TRUE)
-map <- leaflet::addWMSTiles(map, GetURL("USGSHydroCached"),
-                            group = grp[5], options = opt, layers = "0")
+map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSHydroCached"),
+                         group = grp[5], attribution = att)
 map <- leaflet::hideGroup(map, grp[5])
 ```
 
 Point locations, that appear on the map as icons, may be added to a base map using a marker overlay.
 In this example, site locations are included for selected wells in the
-[USGS Idaho National Laboratory](https://id.water.usgs.gov/INL/)
+[USGS Idaho National Laboratory](https://www.usgs.gov/centers/id-water/science/idaho-national-laboratory-project-office)
 water-quality observation network.
 Create the marker-overlay dataset using the following commands (requires web access):
 
