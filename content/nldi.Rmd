@@ -24,7 +24,8 @@ author_staff: "david-blodgett"
 library(knitr)
 
 GetURL <- function(service, host = "basemap.nationalmap.gov") {
-  sprintf("https://%s/arcgis/services/%s/MapServer/WmsServer", host, service)
+  sprintf("https://%s/ArcGIS/rest/services/%s/MapServer/tile/{z}/{y}/{x}",
+          host, service)
 }
 
 get_base_map <- function(options = leaflet::leafletOptions()) {
@@ -35,17 +36,16 @@ get_base_map <- function(options = leaflet::leafletOptions()) {
                 "U.S. Geological Survey</a> | ",
                 "<a href='https://www.usgs.gov/laws/policies_notices.html'>",
                 "Policies</a>")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSTopo"),
-                              group = grp[1], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSImageryOnly"),
-                              group = grp[2], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSImageryTopo"),
-                              group = grp[3], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSShadedReliefOnly"),
-                              group = grp[4], attribution = att, layers = "0")
-  opt <- leaflet::WMSTileOptions(format = "image/png", transparent = TRUE)
-  map <- leaflet::addWMSTiles(map, GetURL("USGSHydroCached"),
-                              group = grp[5], options = opt, layers = "0")
+  map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSTopo"),
+                           group = grp[1], attribution = att)
+  map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryOnly"),
+                           group = grp[2], attribution = att)
+  map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSImageryTopo"),
+                           group = grp[3], attribution = att)
+  map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSShadedReliefOnly"),
+                           group = grp[4], attribution = att)
+  map <- leaflet::addTiles(map, urlTemplate = GetURL("USGSHydroCached"),
+                         group = grp[5], attribution = att)
   map <- leaflet::hideGroup(map, grp[5])
   opt <- leaflet::layersControlOptions(collapsed = FALSE)
   map <- leaflet::addLayersControl(map, baseGroups = grp[1:4],
@@ -126,15 +126,15 @@ main_stem_url <- "https://cida.usgs.gov/nldi/nwissite/USGS-08279500/navigate/UM?
 nwis_gage_url <- "https://cida.usgs.gov/nldi/nwissite/USGS-08279500/navigate/UM/nwissite?distance=150"
 basin_url <- "https://cida.usgs.gov/nldi/nwissite/USGS-08279500/basin"
 
-site <- rgdal::readOGR(dsn = site_url, layer = "OGRGeoJSON", verbose = FALSE)
-main_stem <- rgdal::readOGR(dsn = main_stem_url, layer = "OGRGeoJSON", verbose = FALSE)
-nwis_gages <- rgdal::readOGR(dsn = nwis_gage_url, layer = "OGRGeoJSON", verbose = FALSE)
-basin <- rgdal::readOGR(dsn = basin_url, layer = "OGRGeoJSON", verbose = FALSE)
+site <- sf::read_sf(site_url)
+main_stem <- sf::read_sf(main_stem_url)
+nwis_gages <- sf::read_sf(nwis_gage_url)
+basin <- sf::read_sf(basin_url)
 
 nwis_popups <- paste('<a href="',
-                      nwis_gages@data$uri,
+                      nwis_gages$uri,
                       '"  target="_blank">',
-                      nwis_gages@data$name,
+                      nwis_gages$name,
                       '</a>')
 map <- get_base_map(options = leaflet::leafletOptions(zoomControl = FALSE, 
                                                       dragging = FALSE, 
@@ -281,42 +281,7 @@ Screenshots of NLDI data loaded into QGIS.
 
 ## Using the NLDI in R.
 
-Starting from the [recent blog post](https://owi.usgs.gov/blog/basemaps/) showing how to use National Map basemaps with leaflet in R, we can map some data retrieved from the NLDI in R. In the code below, the leaflet object `map` created in the National Map basemap blog post was wrapped up into the `get_base_map()` function called in the code shown below.
-
-```{r functions, echo=TRUE, message=FALSE, warning=FALSE}
-
-GetURL <- function(service, host = "basemap.nationalmap.gov") {
-  sprintf("https://%s/arcgis/services/%s/MapServer/WmsServer", host, service)
-}
-
-get_base_map <- function(options = leaflet::leafletOptions()) {
-  map <- leaflet::leaflet(options = options)
-  grp <- c("USGS Topo", "USGS Imagery Only", "USGS Imagery Topo",
-           "USGS Shaded Relief", "Hydrography")
-  att <- paste0("<a href='https://www.usgs.gov/'>",
-                "U.S. Geological Survey</a> | ",
-                "<a href='https://www.usgs.gov/laws/policies_notices.html'>",
-                "Policies</a>")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSTopo"),
-                              group = grp[1], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSImageryOnly"),
-                              group = grp[2], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSImageryTopo"),
-                              group = grp[3], attribution = att, layers = "0")
-  map <- leaflet::addWMSTiles(map, GetURL("USGSShadedReliefOnly"),
-                              group = grp[4], attribution = att, layers = "0")
-  opt <- leaflet::WMSTileOptions(format = "image/png", transparent = TRUE)
-  map <- leaflet::addWMSTiles(map, GetURL("USGSHydroCached"),
-                              group = grp[5], options = opt, layers = "0")
-  map <- leaflet::hideGroup(map, grp[5])
-  opt <- leaflet::layersControlOptions(collapsed = FALSE)
-  map <- leaflet::addLayersControl(map, baseGroups = grp[1:4],
-                                   overlayGroups = grp[5], options = opt)
-}
-
-```
-
-First, we get all our URLs into a list and use **readOGR** from the [rgdal](https://cran.r-project.org/web/packages/rgdal/index.html) package to download and read all the data into spatial data types. The end of this code block creates html for popup text with a web link tag that we'll use later.
+First, we get all our URLs into a list and use **read_sf** from the [sf](https://r-spatial.github.io/sf/) package to download and read all the data into spatial data types. The end of this code block creates html for popup text with a web link tag that we'll use later.
 
 ```{r load_data, echo=TRUE, message=FALSE, warning=FALSE}
 nldiURLs <- list(site_data = "https://cida.usgs.gov/nldi/nwissite/USGS-08279500",
@@ -330,20 +295,20 @@ nldiURLs <- list(site_data = "https://cida.usgs.gov/nldi/nwissite/USGS-08279500"
 nldi_data <- list()
 
 for(n in names(nldiURLs)) {
-  nldi_data[n] <- rgdal::readOGR(dsn = nldiURLs[n][[1]], layer = "OGRGeoJSON", verbose = FALSE)
-  print(paste(n, "is of class", class(nldi_data[n][[1]])[1], "and has", length(nldi_data[n][[1]]), "features"))
+  nldi_data[n] <- list(sf::read_sf(nldiURLs[n][[1]]))
+  print(paste(n, "is of class", class(nldi_data[[n]]), "and has", nrow(nldi_data[[n]]), "features"))
 }
 
 UTwqp_html <- paste('<a href="',
-                      nldi_data$UTwqp@data$uri,
+                      nldi_data$UTwqp$uri,
                       '"  target="_blank">',
-                      nldi_data$UTwqp@data$name,
+                      nldi_data$UTwqp$name,
                       '</a>')
 
 DMwqp_html <- paste('<a href="',
-                      nldi_data$DMwqp@data$uri,
+                      nldi_data$DMwqp$uri,
                       '"  target="_blank">',
-                      nldi_data$DMwqp@data$name,
+                      nldi_data$DMwqp$name,
                       '</a>')
 ```
 
@@ -423,21 +388,21 @@ This final map illustrates a very important detail about the NLDI if you zoom in
 The two sources of linked data shown above, `nwissite` and `wqp`, are both queryable from [the dataRetrieval package.](https://owi.usgs.gov/blog/tags/dataretrieval/) The "siteNumber" input of the dataRetrieval functions that start with "readNWIS" can be found by removing "USGS-" from the "identifier" attribute of features found using `nwissite` as the `{dataSource}` input. The following code shows the NLDI identifiers and how to use them with the dataRetrieval function **readNWISdv**.
 
 ```{r dv, fig.cap="Daily Streamflow Plot", alt.text = "Plot of daily streamflow derived from the National Water Information system", echo=TRUE, message=FALSE, warning=FALSE}
-nwis_ids <- as.character(nwis_gages@data$identifier)
-print(paste("The NLDI ID for:", nwis_gages@data$name, "is", nwis_ids))
+nwis_ids <- as.character(nwis_gages$identifier)
+print(paste("The NLDI ID for:", nwis_gages$name, "is", nwis_ids))
 nwis_ids <- gsub(pattern = "USGS-", replacement = "", nwis_ids)
-print(paste(nwis_gages@data$name, "has id", nwis_ids))
+print(paste(nwis_gages$name, "has id", nwis_ids))
 # Now we can use these IDs with dataRetrieval.
 dv_data <- dataRetrieval::readNWISdv(siteNumber = nwis_ids[1], parameterCd = '00060')
 plot(dv_data$Date, dv_data$X_00060_00003, 
-     main = paste("Daily Streamflow for", nwis_gages@data$name[1]), xlab = "", ylab = "Daily Streamflow (CFS)")
+     main = paste("Daily Streamflow for", nwis_gages$name[1]), xlab = "", ylab = "Daily Streamflow (CFS)")
 ```
 
 Similarly, we can use identifiers returned using `wqp` as the `{dataSource}` with the **readWQPqw** function. In this case, the identifiers can be used without modification as shown below. Note that the NLDI query for downstream mainstem found 2756 sites and upstream tributaries found 1908 sites. The query below gets data from just one! The NLDI is used as a spatial pre-filter in the [Water Quality Portal user interface](https://www.waterqualitydata.us/portal/), which has a rich set of filter options in addition to network navigation.
 
 ```{r wqp, echo=TRUE, message=FALSE, warning=FALSE}
-wqp_site <- list(names = as.character(nldi_data$DMwqp@data$name), 
-                 ids = as.character(nldi_data$DMwqp@data$identifier))
+wqp_site <- list(names = as.character(nldi_data$DMwqp$name), 
+                 ids = as.character(nldi_data$DMwqp$identifier))
 print(paste(wqp_site$names[1:10], "has id", wqp_site$ids[1:10]))
 wqp_data <- dataRetrieval::readWQPqw(siteNumbers = wqp_site$ids[1:10], parameterCd = "")
 print(paste0("Got ", ncol(wqp_data), " samples beween ", min(wqp_data$ActivityStartDate), " and ", max(wqp_data$ActivityStartDate), " for characteristics: ", paste(unique(wqp_data$CharacteristicName), collapse = ", ")))
@@ -446,8 +411,6 @@ print(paste0("Got ", ncol(wqp_data), " samples beween ", min(wqp_data$ActivitySt
 ## Summary
 
 In this blog post, we summarized the NLDI's Web API through links to the system's [Swagger](https://cida.usgs.gov/nldi/swagger-ui.html) documentation. The primary API parameters, `{featureSource}` and `{featureID}`, were described. Two functions that operate with any `{featureID}`, _**navigation**_ (and it's optional `{distance}` parameter) and _**basin**_ were demonstrated. The the _**navigation**_ function's `{dataSource}` parameter, which can be any `{featureSource}`, was shown by retrieving NWIS (`nwissite`) and WQP (`wqp`) sites upstream and downstream of an NWIS site.  
-
-Building on the [recent blog post](https://owi.usgs.gov/blog/basemaps/) showing how to use National Map basemaps with leaflet in R, downloading, parsing, and mapping NLDI data in R was demonstrated. This basic demonstration can be extended by using different NLDI inputs and there are many operations that are supported by the spatial data formats returned by the [rgdal packge function **readOGR**.](https://www.rdocumentation.org/packages/rgdal/versions/1.2-5/topics/readOGR)  
 
 The post finishes by showing how to use sites found with the NLDI to download data from the National Water Information System and Water Quality portal. The potential for extending this use of the NLDI is vast. As more feature/data sources are indexed and the system evolves, the NLDI should serve as a major new discovery service for many sources of observed and modeled data.  
 
